@@ -7,6 +7,7 @@ use Console\DB\Export;
 use Console\DB\Import;
 use Console\FrontEnd\Starter;
 use Console\SayHi;
+use Console\Server\Init;
 use Console\Takeover;
 use Symfony\Component\Console\Application;
 
@@ -16,4 +17,5 @@ $app->add(new Starter());
 $app->add(new Import());
 $app->add(new Export());
 $app->add(new Takeover());
+$app->add(new Init());
 $app->run();

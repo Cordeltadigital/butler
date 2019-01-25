@@ -5,6 +5,7 @@
 namespace Console;
 
 use Console\Util\Env as Env;
+use Console\Util\Validator as Validator;
 use Exception;
 use Symfony\Component\Console\Command\Command as SymfonyCommand;
 use Symfony\Component\Console\Input\ArrayInput;
@@ -13,6 +14,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ConfirmationQuestion;
 use Symfony\Component\Console\Question\Question;
+use Symfony\Component\Process\Exception\ProcessFailedException;
 use Symfony\Component\Process\Process;
 
 class Takeover extends SymfonyCommand
@@ -169,7 +171,7 @@ class Takeover extends SymfonyCommand
         $q_domain = new Question('Please enter the domain of this site. (e.g. example.cordelta.digital):', 'example.cordelta.digital');
 
         $q_domain->setValidator(function ($answer) {
-            if (!$this->isDomainValid($answer)) {
+            if (!Validator::isDomainValid($answer)) {
                 throw new \RuntimeException(
                     'Invalid domain, please try again.'
                 );
@@ -223,38 +225,5 @@ class Takeover extends SymfonyCommand
         }
 
         return $result;
-    }
-    /**
-     * checks if a domain name is valid
-     * @param  string $domain_name
-     * @return bool
-     */
-    public function isDomainValid($domain_name)
-    {
-        //FILTER_VALIDATE_URL checks length but..why not? so we dont move forward with more expensive operations
-        $domain_len = strlen($domain_name);
-        if ($domain_len < 3 or $domain_len > 253) {
-            return false;
-        }
-
-        //getting rid of HTTP/S just in case was passed.
-        if (stripos($domain_name, 'http://') === 0) {
-            $domain_name = substr($domain_name, 7);
-        } elseif (stripos($domain_name, 'https://') === 0) {
-            $domain_name = substr($domain_name, 8);
-        }
-
-        //we dont need the www either
-        if (stripos($domain_name, 'www.') === 0) {
-            $domain_name = substr($domain_name, 4);
-        }
-
-        //Checking for a '.' at least, not in the beginning nor end, since http://.abcd. is reported valid
-        if (strpos($domain_name, '.') === false or $domain_name[strlen($domain_name) - 1] == '.' or $domain_name[0] == '.') {
-            return false;
-        }
-
-        //now we use the FILTER_VALIDATE_URL, concatenating http so we can use it, and return BOOL
-        return (filter_var('http://' . $domain_name, FILTER_VALIDATE_URL) === false) ? false : true;
     }
 }
