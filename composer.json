@@ -1,0 +1,14 @@
+{
+  "require": {
+    "symfony/console": "^4.2",
+    "symfony/process": "^4.2"
+  },
+  "autoload": {
+    "psr-4": {
+      "Console\\": "src"
+    },
+    "classmap": [
+      "src"
+    ]
+  }
+}
