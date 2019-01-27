@@ -97,11 +97,7 @@ class Takeover extends SymfonyCommand
         $importInput = new ArrayInput($arguments);
         $returnCode = $command->run($importInput, $output);
 
-        echo $returnCode;
-
-        // create virualhost entry
-
-        // create hosts entry
+        // create virualhost entry and hosts entry
 
         // show msg
 

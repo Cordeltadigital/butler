@@ -33,20 +33,20 @@ class Import extends SymfonyCommand
             $output->writeln('<error>env file doesn\'t exist.</error>');
             return;
         }
-
-        $config = Env::loadConfig($envFile);
-        $newSiteUrl = 'http://' . $config['domain'];
-
-        if (!file_exists('./sql/export.sql')) {
-            $output->writeln('No sql export found, bye!');
-            return;
-        }
-
+        $output->writeln('<info>Creating database.</info>');
         $cmd = "wp db create";
         $process = Process::fromShellCommandline($cmd);
         $process->run(function ($type, $buffer) {
             echo $buffer;
         });
+
+        $config = Env::loadConfig($envFile);
+        $newSiteUrl = 'http://' . $config['domain'];
+
+        if (!file_exists('./sql/export.sql')) {
+            $output->writeln('No sql export found, skipping import.');
+            return;
+        }
 
         // import db from sql
         $cmd = 'wp db import sql/export.sql';

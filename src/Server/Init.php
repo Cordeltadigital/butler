@@ -4,12 +4,14 @@
  */
 namespace Console\Server;
 
+use Console\Util\Env;
+use Console\Util\Git as Git;
 use Exception;
 use Symfony\Component\Console\Command\Command as SymfonyCommand;
+use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ConfirmationQuestion;
-use Symfony\Component\Console\Question\Question;
 use Symfony\Component\Process\Exception\ProcessFailedException;
 use Symfony\Component\Process\Process;
 
@@ -22,7 +24,7 @@ class Init extends SymfonyCommand
 
     public function configure()
     {
-        $this->setName('server:init')
+        $this->setName('init')
             ->setDescription('Make this wp instance consumption ready.');
     }
 
@@ -36,7 +38,7 @@ class Init extends SymfonyCommand
         }
 
         // confirm if user wants to init project in current folder?
-        $confirm = new ConfirmationQuestion('<question>Do you want to initiate new Wordpress project in this folder (' . getcwd() . ')? (Y/n):</question> ', true);
+        $confirm = new ConfirmationQuestion('<question>Is this the new root folder for the site [' . getcwd() . ']? (Y/n):</question> ', true);
 
         if (!$helper->ask($input, $output, $confirm)) {
             $output->writeln('K, bye!');
@@ -44,30 +46,70 @@ class Init extends SymfonyCommand
         }
 
         // git init
-        try {
-            $this->initGit($input, $output);
-        } catch (Exception $e) {
-            $output->writeln('<error>' . $e->getMessage() . '</error>');
-            return;
+        $useExistingRepo = false;
+        if (Git::isRepo()) {
+            // confirm if user wants to use current git settings
+            $output->writeln('Existsing git repo detected:');
+
+            $origin = Git::getOrigin();
+            $output->writeln('<info>' . $origin . '</info>');
+
+            $confirm = new ConfirmationQuestion('<question>Do you want to use the existing git repo? (Y/n):</question> ', true);
+
+            $useExistingRepo = $helper->ask($input, $output, $confirm);
         }
 
-        // git add remote origin xxxxx
+        if (!$useExistingRepo) {
+            // git init
+            try {
+                Git::init($input, $output);
+            } catch (Exception $e) {
+                $output->writeln('<error>' . $e->getMessage() . '</error>');
+                return;
+            }
+
+            // git add remote origin xxxxx
+            try {
+                Git::setRemote($input, $output, $helper);
+            } catch (Exception $e) {
+                $output->writeln('<error>' . $e->getMessage() . '</error>');
+                return;
+            }
+        }
+
+        Git::pull($input, $output);
+
+        // if no file, install brand new wp and export database
+        if (!is_dir('wp-content')) {
+            $output->writeln('<info>No wordpress content detected, initiating a new site.</info>');
+            try {
+                $this->initWP($input, $output);
+                $this->exportDB($input, $output);
+            } catch (Exception $e) {
+                $output->writeln('<error>' . $e->getMessage() . '</error>');
+                return;
+            }
+        }
+
+        // .gitignore
+        file_put_contents('.gitignore', '.env', FILE_APPEND);
+
+        // git push
         try {
-            $this->gitRemote($input, $output);
+            Git::addAll($input, $output);
+            Git::commit($input, $output, '[Butler] site initiated.');
+            Git::push($input, $output);
         } catch (Exception $e) {
             $output->writeln('<error>' . $e->getMessage() . '</error>');
             return;
         }
-        // install brand new wp
-        // export database
-        // git push
     }
 
     private function preInit(InputInterface $input, OutputInterface $output)
     {
         $output->writeln('<info>Let\'s get started!</info>');
 
-        $output->writeln('This process will not be able to create git repo for you, please make sure you have a repo created already under https://bitbucket.org/cordeltadigital/');
+        $output->writeln('<fg=yellow>This process will not be able to create git repo for you, please make sure you have a repo created already under https://bitbucket.org/cordeltadigital/</>');
 
         $helper = $this->getHelper('question');
         $confirm = new ConfirmationQuestion('<question>Have you created the repository? (Y/n):</question> ', true);
@@ -79,12 +121,16 @@ class Init extends SymfonyCommand
         return true;
     }
 
-    public function initGit(InputInterface $input, OutputInterface $output)
+    private function initWP(InputInterface $input, OutputInterface $output)
     {
-        $output->writeln('<info>Awesome! let\'s initialise our local git.</info>');
+        $output->writeln('<info>Installing brand new WordPress</info>');
 
-        $cmd = 'git init';
+        // download wp
+        $cmd = 'wp core download';
+
         $process = Process::fromShellCommandline($cmd);
+        $process->setWorkingDirectory('./');
+        $process->setTimeout(7200);
         $process->run(function ($type, $buffer) {
             echo $buffer;
         });
@@ -92,40 +138,39 @@ class Init extends SymfonyCommand
             throw new ProcessFailedException($process);
         }
 
-        $output->writeln('<comment>Git init... done.</comment>');
+        // localise
+        $output->writeln('<info>Localising wp site.</info>');
+        $command = $this->getApplication()->find('takeover');
+
+        $command->run(new ArrayInput([
+            'command' => 'takeover',
+        ]), $output);
+
+        // install wordpress
+        $config = Env::loadConfig();
+        $cmd = 'wp core install --url=' . $config['domain'] . ' --title=' . $config['domain'] . ' --admin_user=butler --admin_email=sean.wu@cordelta.com';
+
+        $process = Process::fromShellCommandline($cmd);
+        $process->setWorkingDirectory('./');
+        $process->setTimeout(7200);
+        $process->run(function ($type, $buffer) {
+            echo $buffer;
+        });
+        if (!$process->isSuccessful()) {
+            throw new ProcessFailedException($process);
+        }
     }
 
-    public function gitRemote(InputInterface $input, OutputInterface $output)
+    private function exportDB($input, $output)
     {
+        $output->writeln('<info>Exporting database.</info>');
+        $command = $this->getApplication()->find('db:export');
 
-        // @TODO: check if origin exists
+        $arguments = [
+            'command' => 'db:export',
+        ];
 
-        $helper = $this->getHelper('question');
-        $output->writeln('<info>Let\'s link up remote git repo</info>');
-
-        $q = new Question('Please enter the git ssh url, it looks like this: git@bitbucket.org:cordeltadigital/xxxx.git:', '');
-
-        $git_remote = $helper->ask($input, $output, $q);
-
-        $cmd = 'git remote add origin ' . $git_remote;
-        $process = Process::fromShellCommandline($cmd);
-        $process->run(function ($type, $buffer) {
-            echo $buffer;
-        });
-        if (!$process->isSuccessful()) {
-            throw new ProcessFailedException($process);
-        }
-
-        $output->writeln('<comment>Git remote added.</comment>');
-
-        $cmd = 'git pull origin master';
-        $process = Process::fromShellCommandline($cmd);
-        $process->run(function ($type, $buffer) {
-            echo $buffer;
-        });
-        if (!$process->isSuccessful()) {
-            throw new ProcessFailedException($process);
-        }
-        $output->writeln('<comment>You have the latest code.</comment>');
+        $input = new ArrayInput($arguments);
+        return $command->run($input, $output);
     }
 }
