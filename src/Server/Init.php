@@ -45,60 +45,57 @@ class Init extends SymfonyCommand
             return false;
         }
 
-        // git init
-        $useExistingRepo = false;
-        if (Git::isRepo()) {
-            // confirm if user wants to use current git settings
-            $output->writeln('Existsing git repo detected:');
-
-            $origin = Git::getOrigin();
-            $output->writeln('<info>' . $origin . '</info>');
-
-            $confirm = new ConfirmationQuestion('<question>Do you want to use the existing git repo? (Y/n):</question> ', true);
-
-            $useExistingRepo = $helper->ask($input, $output, $confirm);
-        }
-
-        if (!$useExistingRepo) {
+        try {
             // git init
-            try {
+            $useExistingRepo = false;
+            if (Git::isRepo()) {
+                // confirm if user wants to use current git settings
+                $output->writeln('Existsing git repo detected:');
+
+                $origin = Git::getOrigin();
+                $output->writeln('<info>' . $origin . '</info>');
+
+                $confirm = new ConfirmationQuestion('<question>Do you want to use the existing git repo? (Y/n):</question> ', true);
+                $useExistingRepo = $helper->ask($input, $output, $confirm);
+            }
+
+            if (!$useExistingRepo) {
+                // git init
                 Git::init($input, $output);
-            } catch (Exception $e) {
-                $output->writeln('<error>' . $e->getMessage() . '</error>');
-                return;
-            }
 
-            // git add remote origin xxxxx
-            try {
+                // git add remote origin xxxxx
                 Git::setRemote($input, $output, $helper);
-            } catch (Exception $e) {
-                $output->writeln('<error>' . $e->getMessage() . '</error>');
-                return;
             }
-        }
 
-        Git::pull($input, $output);
+            Git::pull($input, $output);
 
-        // if no file, install brand new wp and export database
-        if (!is_dir('wp-content')) {
-            $output->writeln('<info>No wordpress content detected, initiating a new site.</info>');
-            try {
+            // if no file, install brand new wp and export database
+            if (!is_dir('wp-content')) {
+                $output->writeln('<info>No wordpress content detected, initiating a new site.</info>');
+
                 $this->initWP($input, $output);
-                $this->exportDB($input, $output);
-            } catch (Exception $e) {
-                $output->writeln('<error>' . $e->getMessage() . '</error>');
-                return;
             }
-        }
-
-        // .gitignore
-        file_put_contents('.gitignore', "
+            // .gitignore
+            file_put_contents('.gitignore', "
 .env
 wp-config.php
         ", FILE_APPEND);
 
-        // git push
-        try {
+            // select starter template
+            // $question = new ChoiceQuestion(
+            //     'Please select your favorite colors (defaults to red and blue)',
+            //     ['red', 'blue', 'yellow'],
+            //     '0,1'
+            // );
+            // $question->setMultiselect(true);
+
+            // $colors = $helper->ask($input, $output, $question);
+            // $output->writeln('You have just selected: ' . implode(', ', $colors));
+
+            // export db
+            $this->exportDB($input, $output);
+
+            // git push
             Git::addAll($input, $output);
             Git::commit($input, $output, '[Butler] site initiated.');
             Git::push($input, $output);
