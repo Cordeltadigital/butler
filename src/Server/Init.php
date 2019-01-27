@@ -92,7 +92,10 @@ class Init extends SymfonyCommand
         }
 
         // .gitignore
-        file_put_contents('.gitignore', '.env', FILE_APPEND);
+        file_put_contents('.gitignore', "
+.env
+wp-config.php
+        ", FILE_APPEND);
 
         // git push
         try {

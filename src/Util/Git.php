@@ -83,6 +83,7 @@ class Git
         if (empty(self::getBranch())) {
             return;
         }
+        $output->writeln('<info>[Git] Pulling latest code...</info>');
         $cmd = 'git pull origin master';
         $process = Process::fromShellCommandline($cmd);
         $process->run(function ($type, $buffer) {
@@ -96,6 +97,7 @@ class Git
 
     public static function addAll($input, $output)
     {
+        $output->writeln('<info>[Git] Indexing files...</info>');
         $cmd = 'git add .';
 
         $process = Process::fromShellCommandline($cmd);
@@ -115,6 +117,7 @@ class Git
             $msg = 'No comment, committed from script at ' . date('Y-m-d H:i:s');
         }
 
+        $output->writeln('<info>[Git] Committing changes...</info>');
         $cmd = 'git commit -m "' . addslashes($msg) . '"';
         $process = Process::fromShellCommandline($cmd);
         $process->run(function ($type, $buffer) {
@@ -129,6 +132,7 @@ class Git
 
     public static function push($input, $output)
     {
+        $output->writeln('<info>[Git] Pushing changes...</info>');
         $cmd = 'git push origin master';
         $process = Process::fromShellCommandline($cmd);
         $process->run(function ($type, $buffer) {
