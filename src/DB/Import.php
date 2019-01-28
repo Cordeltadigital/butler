@@ -23,14 +23,14 @@ class Import extends SymfonyCommand
     {
         $this->setName('db:import')
             ->setDescription('Import latest sql/export.sql.')
-            ->addOption('envFile', null, InputArgument::OPTIONAL, '.env file path (default to current folder)', './.env');
+            ->addOption('envFile', null, InputArgument::OPTIONAL, '.butler.env file path (default to current folder)', './.butler.env');
     }
 
     public function execute(InputInterface $input, OutputInterface $output)
     {
         $envFile = $input->getOption('envFile');
         if (!file_exists($envFile)) {
-            $output->writeln('<error>env file doesn\'t exist.</error>');
+            $output->writeln('<error>.butler.env file doesn\'t exist.</error>');
             return;
         }
         $output->writeln('<info>Creating database.</info>');
@@ -66,14 +66,14 @@ class Import extends SymfonyCommand
         $currentSiteUrl = $process->getOutput();
 
         // replace current url to url in wp-config
-        $output->writeln('Replacing site urls in the database.');
+        $output->writeln('<info>Replacing site urls in the database...</info>');
         $cmd = "wp search-replace $currentSiteUrl $newSiteUrl";
         $process = Process::fromShellCommandline($cmd);
         $process->run(function ($type, $buffer) {
             echo $buffer;
         });
 
-        $output->writeln('If you didnt see any error, you should have a local site running at ' . $newSiteUrl);
+        $output->writeln('<info>If you have virtual hosts set up already, you should have a local site running at ' . $newSiteUrl.'</info>');
     }
 
 }

@@ -75,11 +75,9 @@ class Init extends SymfonyCommand
 
                 $this->initWP($input, $output);
             }
+
             // .gitignore
-            file_put_contents('.gitignore', "
-.env
-wp-config.php
-        ", FILE_APPEND);
+            copy(BUTLER_DIR . '/templates/.gitignore.tpl', './gitignore');
 
             // select starter template
             // $question = new ChoiceQuestion(

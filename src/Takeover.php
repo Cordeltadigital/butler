@@ -28,25 +28,25 @@ class Takeover extends SymfonyCommand
     {
         $this->setName('takeover')
             ->setDescription('Initiate wp instance locally based on file system.')
-            ->addOption('envFile', null, InputArgument::OPTIONAL, '.env file path (default to current folder)', './.env');
+            ->addOption('configFile', null, InputArgument::OPTIONAL, '.butler.env file path (default to current folder)', './.butler.env');
     }
 
     public function execute(InputInterface $input, OutputInterface $output)
     {
         // pull the latest code from repository
         $output->writeln('<info>Getting the latest code from git remote (origin/master)</info>');
-        // $process = new Process(['git', 'pull', 'origin', 'master']);
-        // $process->run(function ($type, $buffer) {
-        //     echo $buffer;
-        // });
+        $process = new Process(['git', 'pull', 'origin', 'master']);
+        $process->run(function ($type, $buffer) {
+            echo $buffer;
+        });
         // check if there's .env file
-        $envFile = $input->getOption('envFile');
-        if (!file_exists($envFile)) {
-            $this->create_env_file($input, $output, $envFile);
+        $configFile = $input->getOption('configFile');
+        if (!file_exists($configFile)) {
+            $this->create_env_file($input, $output, $configFile);
         }
 
         // read env file to get config
-        $config = Env::loadConfig($envFile);
+        $config = Env::loadConfig($configFile);
 
         // show config
         $output->writeln("============ Config =============");
@@ -138,15 +138,15 @@ class Takeover extends SymfonyCommand
     }
 
     /**
-     * create a new .env file
+     * create a new butler config file
      * @param [type] $input
      * @param [type] $output
      * @return void
      */
-    public function create_env_file(InputInterface $input, OutputInterface $output, $envFile)
+    public function create_env_file(InputInterface $input, OutputInterface $output, $configFile)
     {
         $helper = $this->getHelper('question');
-        $question_start = new ConfirmationQuestion('<question>.env doesn\'t exist, create a new .env file ' . $envFile . '? (Y/n): </question>', true);
+        $question_start = new ConfirmationQuestion('<question>.butler.env doesn\'t exist, create a new .butler.env file ' . $configFile . '? (Y/n): </question>', true);
 
         if (!$helper->ask($input, $output, $question_start)) {
             $output->writeln('K, bye!');
@@ -161,7 +161,7 @@ class Takeover extends SymfonyCommand
             'db_host' => '',
         ];
 
-        $output->writeln('<comment>You can change these settings in .env file after generation.</comment>');
+        $output->writeln('<comment>You can change these settings in .butler.env file after generation.</comment>');
 
         // ask for domain
         $q_domain = new Question('Please enter the domain of this site. (e.g. example.cordelta.digital):', 'example.cordelta.digital');
@@ -193,8 +193,8 @@ class Takeover extends SymfonyCommand
         $q->setHidden(true);
         $conf['db_pass'] = $this->setupEnvVar('db_pass', $input, $output, $q);
 
-        $output->writeln('<info>Generating new .env file ' . $envFile . '...</info>');
-        Env::generateEnvFile($conf, $envFile);
+        $output->writeln('<info>Generating new .butler.env file ' . $configFile . '...</info>');
+        Env::generateEnvFile($conf, $configFile);
         $output->writeln('<info>Done.</info>');
     }
 

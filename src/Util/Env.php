@@ -52,7 +52,7 @@ class Env
         fclose($myfile);
     }
 
-    public static function loadConfig($envFile = './.env')
+    public static function loadConfig($envFile = './.butler.env')
     {
         $config = json_decode(file_get_contents($envFile), true);
         array_map(function ($v) {
