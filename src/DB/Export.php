@@ -32,7 +32,7 @@ class Export extends SymfonyCommand
         // $filename = 'sql/'. date('YmdHis') . '.sql'; // git won't pickup any diffs coz it's in different files.
 
         $filename = 'sql/export.sql';
-        $process = new Process(['wp', 'db', 'export', '--exclude_tables=wp_users', '--add-drop-table', $filename]);
+        $process = new Process(['wp', 'db', 'export', '--add-drop-table', $filename]);
         $process->run();
         // executes after the command finishes
         if (!$process->isSuccessful()) {
