@@ -122,7 +122,7 @@ class Git
         $cmd = 'git commit -m "' . addslashes($msg) . '"';
         $process = Process::fromShellCommandline($cmd);
         $process->run(function ($type, $buffer) {
-            echo $buffer;
+            // echo $buffer;
         });
         if (!$process->isSuccessful()) {
             throw new ProcessFailedException($process);
