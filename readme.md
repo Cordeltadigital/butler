@@ -70,7 +70,7 @@ If you have installed the virtualhost script, you can do
 virutalhost create <domain> <absolute/path/to/folder>
 ```
 
-### Starting from an existing git repository
+## Starting from an existing git repository
 
 **1. Get latest code**
 Get the latest code from existing repo with `git pull`
@@ -88,6 +88,14 @@ If there is a `sql/export.sql` file in the root folder, butler will import it in
 
 Again, if you haven't already, you can use `virualhost` script to create the local virual host for local development.
 
+## Initiate site on Dev server
+
+The Cordelta Digital dev box (dev.cordelta.digital) has been set up with a butler user, ask Sean to grant you ssh access if you need one.
+
+Then you can do `butler init` in dev box with ssh access.
+
+Also ask Sean to create the desired subdomain (e.g. example.cordelta.digial) and point it to the dev box (dev.cordelta.digital)
+
 ## TODO
 
 - Pipeline to do continuous deployment to DO
@@ -95,3 +103,4 @@ Again, if you haven't already, you can use `virualhost` script to create the loc
 - Install themes from Cordelta Digital collection
 - Starter templates
   - Child-theme
+- Web interface?
