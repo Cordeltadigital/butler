@@ -50,14 +50,14 @@ Please ensure you're added in Cordelta Digital's team account in bitbucket, and 
 
 **2. Create your working folder**
 
-```
+```bash
 mkdir xxxx.cordelta.digital
 cd xxxx.cordelta.digital
 ```
 
 **3. Run butler**
 
-```
+```bash
 butler init
 ```
 
@@ -66,7 +66,7 @@ Butler will ask you a bunch of quesitons to initiate a brand new wp site.
 **4. Create virualhost for local dev**
 If you have installed the virtualhost script, you can do
 
-```
+```bash
 virutalhost create <domain> <absolute/path/to/folder>
 ```
 
@@ -90,6 +90,7 @@ Again, if you haven't already, you can use `virualhost` script to create the loc
 
 ## TODO
 
+- Pipeline to do continuous deployment to DO
 - Import site from Flywheel
 - Install themes from Cordelta Digital collection
 - Starter templates
