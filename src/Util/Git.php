@@ -80,10 +80,11 @@ class Git
 
     public static function pull($input, $output)
     {
+        $output->writeln('<info>[Git] Pulling latest code...</info>');
         if (empty(self::getBranch())) {
+            $output->writeln('<info>[Git] No local branch.</info>');
             return;
         }
-        $output->writeln('<info>[Git] Pulling latest code...</info>');
         $cmd = 'git pull origin master';
         $process = Process::fromShellCommandline($cmd);
         $process->run(function ($type, $buffer) {

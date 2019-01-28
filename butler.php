@@ -1,6 +1,7 @@
 <?php
 date_default_timezone_set('Australia/Sydney');
 define('BUTLER_DIR', __DIR__);
+define('BUTLER_VER', '1.0a');
 
 require_once BUTLER_DIR . '/vendor/autoload.php';
 use Console\DB\Export as DBExport;
@@ -12,7 +13,7 @@ use Console\Takeover;
 use Console\Template\Import as TemplateImport;
 use Symfony\Component\Console\Application;
 
-$app = new Application('Cordelta Digital Dev Butler', 'v1.0.0');
+$app = new Application('Cordelta Digital Dev Butler', 'v' . BUTLER_VER);
 $app->add(new SayHi());
 $app->add(new Starter());
 // db:

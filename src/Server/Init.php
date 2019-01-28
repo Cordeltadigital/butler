@@ -5,7 +5,8 @@
 namespace Console\Server;
 
 use Console\Util\Env;
-use Console\Util\Git as Git;
+use Console\Util\Git;
+use Console\Util\Output;
 use Exception;
 use Symfony\Component\Console\Command\Command as SymfonyCommand;
 use Symfony\Component\Console\Input\ArrayInput;
@@ -30,6 +31,7 @@ class Init extends SymfonyCommand
 
     public function execute(InputInterface $input, OutputInterface $output)
     {
+        Output::signature($output);
         $helper = $this->getHelper('question');
         // check requirements
         // make sure you have a repo here https://bitbucket.org/cordeltadigital/xxxx

@@ -73,7 +73,8 @@ class Import extends SymfonyCommand
             echo $buffer;
         });
 
-        $output->writeln('<info>If you have virtual hosts set up already, you should have a local site running at ' . $newSiteUrl.'</info>');
+        $output->writeln('<info>If you have virtual hosts set up already, you should have a local site running at ' . $newSiteUrl . '</info>');
+        $output->writeln('Run <info>virtualhost create ' . $config['domain'] . ' ' . getcwd() . '</info>');
     }
 
 }
