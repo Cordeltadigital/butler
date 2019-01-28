@@ -79,7 +79,7 @@ class Init extends SymfonyCommand
             }
 
             // .gitignore
-            copy(BUTLER_DIR . '/templates/.gitignore.tpl', './gitignore');
+            copy(BUTLER_DIR . '/templates/.gitignore.tpl', './.gitignore');
 
             // select starter template
             // $question = new ChoiceQuestion(
