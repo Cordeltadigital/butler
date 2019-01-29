@@ -30,10 +30,10 @@ class Import extends SymfonyCommand
     {
         $envFile = $input->getOption('envFile');
         if (!file_exists($envFile)) {
-            $output->writeln('<error>.butler.env file doesn\'t exist.</error>');
+            $output->writeln('<error>[db:import] .butler.env file doesn\'t exist.</error>');
             return;
         }
-        $output->writeln('<info>Creating database.</info>');
+        $output->writeln('<info>[db:import] Creating database.</info>');
         $cmd = "wp db create";
         $process = Process::fromShellCommandline($cmd);
         $process->run(function ($type, $buffer) {
@@ -44,11 +44,12 @@ class Import extends SymfonyCommand
         $newSiteUrl = 'http://' . $config['domain'];
 
         if (!file_exists('./sql/export.sql')) {
-            $output->writeln('No sql export found, skipping import.');
+            $output->writeln('[db:import] No sql export found, skipping import.');
             return;
         }
 
         // import db from sql
+        $output->writeln('[db:import] wp db import sql/export.sql');
         $cmd = 'wp db import sql/export.sql';
         $process = Process::fromShellCommandline($cmd);
         $process->setWorkingDirectory('./');
@@ -57,7 +58,7 @@ class Import extends SymfonyCommand
         });
 
         // get current url stored in db
-        $output->writeln('Getting the site url in database.');
+        $output->writeln('[db:import] Getting the site url in database.');
         $cmd = 'wp option get siteurl';
         $process = Process::fromShellCommandline($cmd);
         $process->run(function ($type, $buffer) {
@@ -66,7 +67,7 @@ class Import extends SymfonyCommand
         $currentSiteUrl = $process->getOutput();
 
         // replace current url to url in wp-config
-        $output->writeln('<info>Replacing site urls in the database...</info>');
+        $output->writeln('<info>[db:import] Replacing site urls in the database...</info>');
         $cmd = "wp search-replace $currentSiteUrl $newSiteUrl";
         $process = Process::fromShellCommandline($cmd);
         $process->run(function ($type, $buffer) {
