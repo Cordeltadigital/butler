@@ -78,8 +78,12 @@ class Init extends SymfonyCommand
                 $this->initWP($input, $output);
             }
 
+            // copy files
             // .gitignore
             copy(BUTLER_DIR . '/templates/.gitignore.tpl', './.gitignore');
+
+            // .gitignore
+            copy(BUTLER_DIR . '/templates/.htaccess.tpl', './.htaccess');
 
             // select starter template
             // $question = new ChoiceQuestion(
