@@ -97,10 +97,20 @@ class Takeover extends SymfonyCommand
         $importInput = new ArrayInput($arguments);
         $returnCode = $command->run($importInput, $output);
 
-        // create virualhost entry and hosts entry
+        // Create user account
+        $output->writeln('<info>Creating new admin user account.</info>');
+        $q = new Question('Please enter the user email.', '');
+        $user_email = $helper->ask($input, $output, $q);
 
-        // show msg
+        $cmd = 'wp user create ' . trim($user_email) . ' ' . trim($user_email) . ' --role=administrator';
 
+        $process = Process::fromShellCommandline($cmd);
+        $process->setWorkingDirectory('./');
+        $process->run(function ($type, $buffer) {
+            echo $buffer;
+        });
+
+        $output->writeln('<info>Admin user created.</info>');
     }
     public function validateEnvVar(array $env)
     {
