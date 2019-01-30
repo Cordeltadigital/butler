@@ -4,7 +4,7 @@
  */
 namespace Console;
 
-use Console\Util\Env as Env;
+use Console\Util\Env;
 use Exception;
 use Symfony\Component\Console\Command\Command as SymfonyCommand;
 use Symfony\Component\Console\Input\ArrayInput;

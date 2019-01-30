@@ -6,10 +6,13 @@
  */
 namespace Console\Migrate;
 
+use Console\Util\Env;
 use Symfony\Component\Console\Command\Command as SymfonyCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Process\Exception\ProcessFailedException;
+use Symfony\Component\Process\Process;
 
 class Flywheel extends SymfonyCommand
 {
@@ -48,55 +51,56 @@ class Flywheel extends SymfonyCommand
          * 8. search replace site url
          */
         // 1. check if zip file exist
-        // $zipFile = $input->getArgument('zipFile');
-        // if (!\file_exists($zipFile)) {
-        //     $output->writeln('<error>Backup file ' . $zipFile . ' not found.</error>');
-        //     return;
-        // }
+        $zipFile = $input->getArgument('zipFile');
+        if (!\file_exists($zipFile)) {
+            $output->writeln('<error>Backup file ' . $zipFile . ' not found.</error>');
+            return;
+        }
 
         // 2. unzip to flywheel folder
-        // $output->writeln('<info>Unzipping flywheel backup file.</info>');
         $flywheel_dir = './flywheel';
-        // $cmd = 'unzip ' . $zipFile . ' -d ' . $flywheel_dir;
-        // $process = Process::fromShellCommandline($cmd);
-        // $process->setWorkingDirectory('./');
-        // $process->setTimeout(7200);
-        // $process->run(function ($type, $buffer) {
-        //     echo $buffer;
-        // });
-        // if (!$process->isSuccessful()) {
-        //     throw new ProcessFailedException($process);
-        // }
+
+        $output->writeln('<info>Unzipping flywheel backup file.</info>');
+        $cmd = 'unzip ' . $zipFile . ' -d ' . $flywheel_dir;
+        $process = Process::fromShellCommandline($cmd);
+        $process->setWorkingDirectory('./');
+        $process->setTimeout(7200);
+        $process->run(function ($type, $buffer) {
+            echo $buffer;
+        });
+        if (!$process->isSuccessful()) {
+            throw new ProcessFailedException($process);
+        }
 
         // 3. check if backup.sql and file/wp-content folder exist
-        // if (!is_dir($flywheel_dir)) {
-        //     $output->writeln('<error>No flywheel folder found.</error>');
-        //     return;
-        // }
+        if (!is_dir($flywheel_dir)) {
+            $output->writeln('<error>No flywheel folder found.</error>');
+            return;
+        }
 
         $sql_file = $flywheel_dir . '/backup.sql';
-        // if (!file_exists($flywheel_dir . '/backup.sql')) {
-        //     $output->writeln('<error>No flywheel backup.sql found.</error>');
-        //     return;
-        // }
+        if (!file_exists($flywheel_dir . '/backup.sql')) {
+            $output->writeln('<error>No flywheel backup.sql found.</error>');
+            return;
+        }
         $wp_content_path = $flywheel_dir . '/files/wp-content';
-        // if (!is_dir($wp_content_path)) {
-        //     $output->writeln('<error>No flywheel wp-content folder found.</error>');
-        //     return;
-        // }
+        if (!is_dir($wp_content_path)) {
+            $output->writeln('<error>No flywheel wp-content folder found.</error>');
+            return;
+        }
 
         // 4. copy wp-content folder over
-        // $output->writeln('<info>Copying flywheel files over.</info>');
-        // $cmd = 'cp -r ' . $wp_content_path . ' .';
-        // $process = Process::fromShellCommandline($cmd);
-        // $process->setWorkingDirectory('./');
-        // $process->setTimeout(7200);
-        // $process->run(function ($type, $buffer) {
-        //     echo $buffer;
-        // });
-        // if (!$process->isSuccessful()) {
-        //     throw new ProcessFailedException($process);
-        // }
+        $output->writeln('<info>Copying flywheel files over.</info>');
+        $cmd = 'cp -r ' . $wp_content_path . ' .';
+        $process = Process::fromShellCommandline($cmd);
+        $process->setWorkingDirectory('./');
+        $process->setTimeout(7200);
+        $process->run(function ($type, $buffer) {
+            echo $buffer;
+        });
+        if (!$process->isSuccessful()) {
+            throw new ProcessFailedException($process);
+        }
 
         // 5. get wp prefix
         $output->writeln('<info>Getting database prefix...</info>');
@@ -168,7 +172,7 @@ class Flywheel extends SymfonyCommand
             echo $buffer;
         });
         $currentSiteUrl = $process->getOutput();
-
+        // 8.2 replace url in database
         $output->writeln('<info>Replacing site urls in the database...</info>');
         $cmd = "wp search-replace $currentSiteUrl $newSiteUrl";
         $process = Process::fromShellCommandline($cmd);
