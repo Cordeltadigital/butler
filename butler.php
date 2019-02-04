@@ -6,8 +6,8 @@ define('BUTLER_VER', '1.0a');
 require_once BUTLER_DIR . '/vendor/autoload.php';
 use Console\DB\Export as DBExport;
 use Console\DB\Import as DBImport;
+use Console\Init;
 use Console\SayHi;
-use Console\Server\Init;
 use Console\Takeover;
 use Console\Template\Import as TemplateImport;
 use Symfony\Component\Console\Application;
@@ -28,6 +28,7 @@ $app->add(new \Console\Migrate\Flywheel());
 
 //
 $app->add(new \Console\EnvCommand());
+$app->add(new \Console\Template\DeployScripts());
 $app->add(new Takeover());
 $app->add(new Init());
 $app->run();

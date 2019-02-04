@@ -1,0 +1,15 @@
+.single .qt-content.qt-member .qt-member-header-inner .qt-profilepic{
+    width: 200px;
+    height: 200px;
+    max-width: none;
+    max-height: none;
+    transform: none;
+    border: none;
+    img{
+        margin: 0;
+        border-radius: 50%;
+        transform: none;
+        width: 100%;
+        height: 100%;
+    }
+}

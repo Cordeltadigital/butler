@@ -2,7 +2,7 @@
 /**
  * run this on server, make this wp instance consumption ready.
  */
-namespace Console\Server;
+namespace Console;
 
 use Console\Util\Env;
 use Console\Util\Git;

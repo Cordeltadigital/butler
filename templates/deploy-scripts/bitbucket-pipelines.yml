@@ -1,0 +1,9 @@
+image: atlassian/default-image:latest
+
+pipelines:
+  default:
+    - step:
+        deployment: staging
+        script:
+          - cat ./deploy.sh | ssh butler@dev.cordelta.digital
+          - echo "Deploy step finished"
