@@ -11,6 +11,7 @@ use Console\Util\Output;
 use Exception;
 use Symfony\Component\Console\Command\Command as SymfonyCommand;
 use Symfony\Component\Console\Input\ArrayInput;
+use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -24,13 +25,17 @@ class Sync extends SymfonyCommand
     public function configure()
     {
         $this->setName('server:sync')
-            ->setDescription('Push changes made on dev server.');
+            ->setDescription('Push changes made on dev server.')
+            ->addOption('rootDir', null, InputArgument::OPTIONAL, 'root directory of the site (default current directory).', './');
+
     }
 
     public function execute(InputInterface $input, OutputInterface $output)
     {
+        $rootDir = $input->getOption('rootDir');
         Output::signature($output);
         try {
+            \chdir($rootDir);
             $this->exportDB($input, $output);
             Git::addAll($input, $output);
             Git::commit($input, $output, '[Butler] Server sync.');
