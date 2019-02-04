@@ -26,7 +26,9 @@ $app->add(new TemplateImport());
 // Migration
 $app->add(new \Console\Migrate\Flywheel());
 
-//
+//Server
+$app->add(new \Console\Server\Sync());
+
 $app->add(new \Console\EnvCommand());
 $app->add(new \Console\Template\DeployScripts());
 $app->add(new Takeover());
