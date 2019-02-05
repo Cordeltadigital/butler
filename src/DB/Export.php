@@ -5,11 +5,11 @@
  */
 namespace Console\DB;
 
+use Console\Util\Output;
+use Console\Util\SubProcess;
 use Symfony\Component\Console\Command\Command as SymfonyCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Process\Exception\ProcessFailedException;
-use Symfony\Component\Process\Process;
 
 class Export extends SymfonyCommand
 {
@@ -26,31 +26,8 @@ class Export extends SymfonyCommand
 
     public function execute(InputInterface $input, OutputInterface $output)
     {
-        if (!is_dir('sql')) {
-            mkdir('sql');
-        }
-        // $filename = 'sql/'. date('YmdHis') . '.sql'; // git won't pickup any diffs coz it's in different files.
+        Output::signature($output);
+        SubProcess::exportDB($input, $output);
 
-        $filename = 'sql/export.sql';
-        $process = new Process(['wp', 'db', 'export', '--add-drop-table', $filename]);
-        $process->run();
-        // executes after the command finishes
-        if (!$process->isSuccessful()) {
-            throw new ProcessFailedException($process);
-        }
-
-        echo $process->getOutput();
-
-    }
-
-    protected function greetUser(InputInterface $input, OutputInterface $output)
-    {
-        // outputs multiple lines to the console (adding "\n" at the end of each line)
-        $output->writeln([
-            '==========================================',
-        ]);
-
-        // outputs a message without adding a "\n" at the end of the line
-        $output->write('Hi, ' . $input->getArgument('username'));
     }
 }
