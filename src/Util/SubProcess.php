@@ -29,7 +29,7 @@ class SubProcess
         }
 
         $filename = 'sql/export.sql';
-        $process = new Process(['wp', 'db', 'export', '--add-drop-table', $filename]);
+        $process = new Process(['wp', 'db', 'export', '--add-drop-table', '--extended-insert=FALSE', $filename]);
         $process->run();
         // executes after the command finishes
         if (!$process->isSuccessful()) {
