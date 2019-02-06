@@ -29,8 +29,8 @@ $app->add(new \Console\Migrate\Flywheel());
 //Push
 $app->add(new \Console\Server\Sync());
 
-// Pull
-$app->add(new \Console\Update());
+// Pull (not ready yet, running the command twice will resolve conflict automatically and local changes will overwirte remove changes.)
+// $app->add(new \Console\Update());
 
 $app->add(new \Console\EnvCommand());
 $app->add(new \Console\Template\DeployScripts());

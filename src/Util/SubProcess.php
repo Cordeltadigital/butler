@@ -33,11 +33,18 @@ class SubProcess
     {
         try {
             // Commit local changes.
+
+            $output->writeln('<info>==== Updating local site ====</info>');
+
+            $output->writeln('<info>Staging local changes.</info>');
             self::exportDB($input, $output);
             Git::addAll($input, $output);
             Git::commit($input, $output, '[Butler] Update preparation.');
 
             // This might incur conflicts, developers need to resolve and test them locally
+
+            $output->writeln('<info>Pulling remote code.</info>');
+            $output->writeln('<fg=white;bg=blue;options=bold>There might be conflicts that you need to resolve and test locally before pushing up again.</>');
             Git::pull($input, $output);
 
             // if no error thrown import db
