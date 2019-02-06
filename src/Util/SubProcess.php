@@ -7,6 +7,10 @@ use Symfony\Component\Process\Process;
 
 class SubProcess
 {
+    /**
+     * Fancy PUSH
+     * @param string $rootDir (optional) absolute path for wp site root folder
+     */
     public static function sync($input, $output, $rootDir = './')
     {
         try {
@@ -15,6 +19,29 @@ class SubProcess
             Git::addAll($input, $output);
             Git::commit($input, $output, '[Butler] Server sync.');
             Git::push($input, $output);
+        } catch (Exception $e) {
+            $output->writeln('<error>' . $e->getMessage() . '</error>');
+            return;
+        }
+    }
+
+    /**
+     * Fancy PULL
+     * @return void
+     */
+    public static function update($input, $output)
+    {
+        try {
+            // Commit local changes.
+            self::exportDB($input, $output);
+            Git::addAll($input, $output);
+            Git::commit($input, $output, '[Butler] Update preparation.');
+
+            // This might incur conflicts, developers need to resolve and test them locally
+            Git::pull($input, $output);
+
+            // if no error thrown import db
+            self::importDB($input, $output);
         } catch (Exception $e) {
             $output->writeln('<error>' . $e->getMessage() . '</error>');
             return;
@@ -39,7 +66,7 @@ class SubProcess
         echo $process->getOutput();
     }
 
-    public static function importDB($input, $output, $envFile)
+    public static function importDB($input, $output, $envFile = './.butler.env')
     {
         $output->writeln('<info>[db:import] Creating database.</info>');
         $cmd = "wp db create";

@@ -92,6 +92,7 @@ class Git
         });
         if (!$process->isSuccessful()) {
             throw new ProcessFailedException($process);
+            return;
         }
         $output->writeln('<comment>You have the latest code.</comment>');
     }

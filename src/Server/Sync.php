@@ -6,7 +6,6 @@
  */
 namespace Console\Server;
 
-use Console\Util\Output;
 use Console\Util\SubProcess;
 use Symfony\Component\Console\Command\Command as SymfonyCommand;
 use Symfony\Component\Console\Input\InputArgument;
@@ -30,7 +29,7 @@ class Sync extends SymfonyCommand
 
     public function execute(InputInterface $input, OutputInterface $output)
     {
-        Output::signature($output);
+        // Output::signature($output);
         $rootDir = $input->getOption('rootDir');
         SubProcess::sync($input, $output, $rootDir);
     }
