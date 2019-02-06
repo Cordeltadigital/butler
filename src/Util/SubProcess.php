@@ -76,7 +76,7 @@ class SubProcess
 
         // replace current url to url in wp-config
         $output->writeln('<info>[db:import] Replacing site urls in the database...</info>');
-        $cmd = "wp search-replace $currentSiteUrl $newSiteUrl";
+        $cmd = "wp search-replace '$currentSiteUrl' '$newSiteUrl'";
         $process = Process::fromShellCommandline($cmd);
         $process->run(function ($type, $buffer) {
             echo $buffer;
