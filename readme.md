@@ -19,12 +19,15 @@ Make sure you can access `git`, `composer` and `wp` commands from anywhere.
 **Clone this repo**
 
 ```bash
-git clone https://seanwuapps@bitbucket.org/cordeltadigital/butler.git
+git clone https://{USERNAME}@bitbucket.org/cordeltadigital/butler.git
 ```
+
+Replace {USERNAME} with your bitbucket username (click Clone button and copy the command).
 
 **Install dependencies**
 
 ```bash
+cd butler
 composer install
 ```
 
