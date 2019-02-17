@@ -4,6 +4,7 @@ namespace Console\Util;
 
 // use Console\Util\Git;
 use Symfony\Component\Process\Process;
+use Symfony\Component\Process\ProcessFailedException;
 
 class SubProcess
 {
