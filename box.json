@@ -1,0 +1,15 @@
+{
+  "directories": ["src"],
+  "finder": [
+    {
+      "name": "*.php",
+      "exclude": ["Tests"],
+      "in": "vendor"
+    }
+  ],
+  "chmod": "0755",
+  "git-version": "package_version",
+  "main": "butler.php",
+  "output": "bin/butler.phar",
+  "stub": true
+}
