@@ -80,6 +80,10 @@ class EnvCommand extends SymfonyCommand
         $q = new Question('Please enter the database host (default=localhost): ', 'localhost');
         $conf['db_host'] = $this->setupEnvVar('db_host', $input, $output, $q);
 
+        // db name
+        $q = new Question('Please enter the database name: ', 'butler');
+        $conf['db_name'] = $this->setupEnvVar('db_name', $input, $output, $q);
+
         // db user
         $q = new Question('Please enter the database username: ', 'butler');
         $conf['db_user'] = $this->setupEnvVar('db_user', $input, $output, $q);

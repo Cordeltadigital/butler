@@ -129,8 +129,9 @@ class Takeover extends SymfonyCommand
         file_put_contents($tmp_pass_file, $pass);
 
         // $process = new Process(['wp', 'config', 'create', '--dbname=' . $config['domain'], '--dbuser=' . $config['db_user'], '--dbhost=' . $config['db_host'], '--dbpass=' . $pass]);
+        $db_name = $config['db_name'] ? $config['db_name'] : $config['domain'];
 
-        $cmd = 'wp config create --dbname=' . $config['domain'] . ' --dbuser=' . $config['db_user'] . ' --dbhost=' . $config['db_host'] . ' --prompt=dbpass < ' . $tmp_pass_file;
+        $cmd = 'wp config create --dbname=' . $db_name . ' --dbuser=' . $config['db_user'] . ' --dbhost=' . $config['db_host'] . ' --prompt=dbpass < ' . $tmp_pass_file;
 
         $process = Process::fromShellCommandline($cmd);
         $process->setWorkingDirectory('./');
