@@ -50,6 +50,7 @@ final class ButlerApplication extends Application
             new \Console\EnvCommand(),
             new \Console\Takeover(),
             new \Console\Init(),
+            new \Console\InfoCommand(),
         ]);
 
         return $commands;
