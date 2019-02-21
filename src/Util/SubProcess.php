@@ -86,14 +86,15 @@ class SubProcess
         $config = Env::loadConfig($envFile);
         $newSiteUrl = 'http://' . $config['domain'];
 
-        if (!file_exists('./sql/export.sql')) {
+        $sql_file = 'sql/export.sql';
+        if (!file_exists($sql_file)) {
             $output->writeln('[db:import] No sql export found, skipping import.');
             return;
         }
 
         // import db from sql
-        $output->writeln('[db:import] wp db import sql/export.sql');
-        $cmd = 'wp db import sql/export.sql';
+        $output->writeln('[db:import] wp db import ' . $sql_file);
+        $cmd = 'wp db import ' . $sql_file;
         $process = Process::fromShellCommandline($cmd);
         $process->setWorkingDirectory('./');
         $process->run(function ($type, $buffer) {
@@ -117,7 +118,43 @@ class SubProcess
             echo $buffer;
         });
 
+        // update table prefix in wp_config.php
+        $prefix = self::getPrefixFromSQL($input, $output, $sql_file);
+        self::setTablePrefix($input, $output, $prefix);
+
         $output->writeln('<info>If you have virtual hosts set up already, you should have a local site running at ' . $newSiteUrl . '</info>');
         $output->writeln('Run <info>virtualhost create ' . $config['domain'] . ' ' . getcwd() . '</info>');
     }
+
+    /**
+     * get table prefix from a SQL file
+     *
+     * @return string prefix
+     */
+    public static function getPrefixFromSQL($input, $output, $sql_file)
+    {
+        $output->writeln('<info>Getting database prefix...</info>');
+        $query = file_get_contents($sql_file);
+        preg_match('`wp_(.*)_commentmeta`', $query, $matches, 0);
+        $prefix = 'wp_' . $matches[1] . '_';
+
+        return $prefix;
+    }
+
+    public static function setTablePrefix($input, $output, $prefix)
+    {
+        $output->writeln('<info>Renaming database prefix in wp-config.php</info>');
+        $cmd = 'wp config set table_prefix ' . $prefix;
+        $process = Process::fromShellCommandline($cmd);
+        $process->setWorkingDirectory('./');
+        $process->setTimeout(7200);
+        $process->run(function ($type, $buffer) {
+            echo $buffer;
+        });
+        if (!$process->isSuccessful()) {
+            throw new ProcessFailedException($process);
+        }
+
+    }
+
 }

@@ -103,10 +103,7 @@ class Flywheel extends SymfonyCommand
         }
 
         // 5. get wp prefix
-        $output->writeln('<info>Getting database prefix...</info>');
-        $query = file_get_contents($sql_file);
-        preg_match('`wp_(.*)_commentmeta`', $query, $matches, 0);
-        $prefix = 'wp_' . $matches[1] . '_';
+        $prefix = \Console\Util\SubProcess::getPrefixFromSQL($input, $output, $sql_file);
 
         // 6. import backup.sql
         // 6.1 backup current db into sql tmp.sql file
@@ -151,17 +148,7 @@ class Flywheel extends SymfonyCommand
         }
 
         // 7. change prefix in wp-config.php
-        $output->writeln('<info>Renaming database prefix in wp-config.php</info>');
-        $cmd = 'wp config set table_prefix ' . $prefix;
-        $process = Process::fromShellCommandline($cmd);
-        $process->setWorkingDirectory('./');
-        $process->setTimeout(7200);
-        $process->run(function ($type, $buffer) {
-            echo $buffer;
-        });
-        if (!$process->isSuccessful()) {
-            throw new ProcessFailedException($process);
-        }
+        \Console\Util\SubProcess::setTablePrefix();
 
         // 8. search replace site url
         // 8.1 get current site url
