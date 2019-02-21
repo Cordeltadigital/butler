@@ -32,11 +32,11 @@ class Takeover extends SymfonyCommand
     public function execute(InputInterface $input, OutputInterface $output)
     {
         // pull the latest code from repository
-        $output->writeln('<info>Getting the latest code from git remote (origin/master)</info>');
-        $process = new Process(['git', 'pull', 'origin', 'master']);
-        $process->run(function ($type, $buffer) {
-            echo $buffer;
-        });
+        // $output->writeln('<info>Getting the latest code from git remote (origin/master)</info>');
+        // $process = new Process(['git', 'pull', 'origin', 'master']);
+        // $process->run(function ($type, $buffer) {
+        //     echo $buffer;
+        // });
         // check if there's .env file
         $configFile = $input->getOption('configFile');
         if (!file_exists($configFile)) {
