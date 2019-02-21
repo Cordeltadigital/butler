@@ -133,11 +133,15 @@ class SubProcess
      */
     public static function getPrefixFromSQL($input, $output, $sql_file)
     {
-        $output->writeln('<info>Getting database prefix...</info>');
+
+        $output->writeln('<info>Getting database prefix from ' . $sql_file . '...</info>');
         $query = file_get_contents($sql_file);
         preg_match('`wp_(.*)_commentmeta`', $query, $matches, 0);
-        $prefix = 'wp_' . $matches[1] . '_';
+        if (!isset($matches[1])) {
+            return 'wp_'; //use default
+        }
 
+        $prefix = 'wp_' . $matches[1] . '_';
         return $prefix;
     }
 
