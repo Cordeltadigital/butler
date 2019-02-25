@@ -101,6 +101,10 @@ class SubProcess
             echo $buffer;
         });
 
+        if (!$process->isSuccessful()) {
+            throw new ProcessFailedException($process);
+        }
+
         // get current url stored in db
         $output->writeln('[db:import] Getting the site url in database.');
         $cmd = 'wp option get siteurl';
@@ -122,7 +126,7 @@ class SubProcess
         $prefix = self::getPrefixFromSQL($input, $output, $sql_file);
         self::setTablePrefix($input, $output, $prefix);
 
-        $output->writeln('<info>If you have virtual hosts set up already, you should have a local site running at ' . $newSiteUrl . '</info>');
+        $output->writeln('<info>Site database imported.</info>');
         $output->writeln('Run <info>virtualhost create ' . $config['domain'] . ' ' . getcwd() . '</info>');
     }
 
