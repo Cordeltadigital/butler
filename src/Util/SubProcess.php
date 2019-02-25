@@ -96,7 +96,7 @@ class SubProcess
         $output->writeln('[db:import] wp db import ' . $sql_file);
         $cmd = 'wp db import ' . $sql_file;
         $process = Process::fromShellCommandline($cmd);
-        $process->setWorkingDirectory('./site');
+        // $process->setWorkingDirectory('./');
         $process->run(function ($type, $buffer) {
             echo $buffer;
         });
@@ -150,7 +150,7 @@ class SubProcess
         $output->writeln('<info>Renaming database prefix in wp-config.php</info>');
         $cmd = 'wp config set table_prefix ' . $prefix;
         $process = Process::fromShellCommandline($cmd);
-        $process->setWorkingDirectory('./site');
+        // $process->setWorkingDirectory('./site');
         $process->setTimeout(7200);
         $process->run(function ($type, $buffer) {
             echo $buffer;
