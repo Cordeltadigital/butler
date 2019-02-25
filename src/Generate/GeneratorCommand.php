@@ -8,6 +8,7 @@ use Symfony\Component\Console\Command\Command;
 
 class GeneratorCommand extends Command
 {
+
     public function copyAndReplace()
     {
         // read stub

@@ -1,4 +1,4 @@
-name: @nameSlug@
+name: @site_slug@
 recipe: wordpress
 config:
   php: 7.2

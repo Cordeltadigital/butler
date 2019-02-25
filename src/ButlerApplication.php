@@ -51,7 +51,7 @@ final class ButlerApplication extends Application
             new \Console\Takeover(),
             new \Console\Init(),
             new \Console\InfoCommand(),
-            new \Console\Generate\DeployScriptsGenerator(),
+            new \Console\Generate\SetupScriptsGenerator(),
         ]);
 
         return $commands;

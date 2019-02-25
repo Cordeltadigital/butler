@@ -38,7 +38,8 @@ class Init extends SymfonyCommand
         }
 
         // confirm if user wants to init project in current folder?
-        $confirm = new ConfirmationQuestion('<question>Is this the new root folder for the site [' . getcwd() . ']? (Y/n):</question> ', true);
+        $working_dir = getcwd();
+        $confirm = new ConfirmationQuestion('<question>Is this the new root folder for the site [' . $working_dir . ']? (Y/n):</question> ', true);
 
         if (!$helper->ask($input, $output, $confirm)) {
             $output->writeln('K, bye!');
@@ -69,19 +70,34 @@ class Init extends SymfonyCommand
 
             Git::pull($input, $output);
 
-            // if no file, install brand new wp and export database
-            if (!is_dir('site')) {
-                $output->writeln('<info>No wordpress content detected, initiating a new site.</info>');
+            // create folder structure
+            mkdir('site');
 
-                $this->initWP($input, $output);
-            }
+            // create env file
+            $command = $this->getApplication()->find('env');
+            $arguments = [
+                'command' => 'env',
+            ];
 
-            // copy files
-            // .gitignore
-            copy(BUTLER_DIR . '/src/stubs/.gitignore.tpl', './.gitignore');
+            $input = new ArrayInput($arguments);
+            $command->run($input, $output);
 
-            // .gitignore
-            copy(BUTLER_DIR . '/src/stubs/.htaccess.tpl', './.htaccess');
+            // copy env file into site folder so "takeover" command doesn't ask again
+            copy('./.butler.env', './site/.butler.env');
+
+            // copy scripts
+            $command = $this->getApplication()->find('generate:scripts');
+            $arguments = [
+                'command' => 'generate:scripts',
+            ];
+
+            $input = new ArrayInput($arguments);
+            $returnCode = $command->run($input, $output);
+            $output->writeln($returnCode);
+
+            chdir('site');
+
+            $this->initWP($input, $output);
 
             // select starter template
             // $question = new ChoiceQuestion(
@@ -98,6 +114,7 @@ class Init extends SymfonyCommand
             $this->exportDB($input, $output);
 
             // git push
+            chdir($working_dir);
             Git::addAll($input, $output);
             Git::commit($input, $output, '[Butler] site initiated.');
             Git::push($input, $output);
@@ -125,10 +142,6 @@ class Init extends SymfonyCommand
 
     private function initWP(InputInterface $input, OutputInterface $output)
     {
-        // create folder structure
-        mkdir('site');
-
-        chdir('site');
 
         // download wp
         $output->writeln('<info>Downloading WordPress core</info>');

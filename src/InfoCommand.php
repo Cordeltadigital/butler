@@ -2,6 +2,7 @@
 namespace Console;
 
 use Console\Util\Env;
+use Console\Util\Output;
 use Symfony\Component\Console\Command\Command as SymfonyCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -36,7 +37,7 @@ class InfoCommand extends SymfonyCommand
             'Butler version' => BUTLER_VER,
             'Global env path' => $globalEnvPath,
             'Global env file exists? ' => $globalEnvFileExists ? 'Yes' : 'No',
-            'Loaded env' => json_encode($env),
+            'Loaded env' => json_encode($env, JSON_PRETTY_PRINT),
             'Butler directory' => BUTLER_DIR,
         ];
         $output->writeln('====================');
