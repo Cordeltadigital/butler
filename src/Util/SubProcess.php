@@ -84,7 +84,7 @@ class SubProcess
         });
 
         $config = Env::loadConfig($envFile);
-        $newSiteUrl = 'http://' . $config['domains']['primary'];
+        $newSiteUrl = 'http://' . $config['domain'];
 
         $sql_file = 'sql/export.sql';
         if (!file_exists($sql_file)) {
@@ -127,7 +127,7 @@ class SubProcess
         self::setTablePrefix($input, $output, $prefix);
 
         $output->writeln('<info>Site database imported.</info>');
-        $output->writeln('Run <info>virtualhost create ' . $config['domains']['primary'] . ' ' . getcwd() . '</info>');
+        $output->writeln('Run <info>virtualhost create ' . $config['domain'] . ' ' . getcwd() . '</info>');
     }
 
     /**

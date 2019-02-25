@@ -53,11 +53,9 @@ class EnvCommand extends SymfonyCommand
         $conf = [
             'site_name' => '',
             'site_slug' => '',
-            'domains' => [
-                'primary' => '',
-                'lando' => '',
-                'dev' => '',
-            ],
+            'local_domain' => '',
+            'dev_domain' => '',
+            'domain' => '',
             'db_user' => '',
             'db_pass' => '',
             'db_host' => '',
@@ -74,21 +72,21 @@ class EnvCommand extends SymfonyCommand
         $conf['site_slug'] = $site_slug;
 
         $dev_domain = $site_slug . '.cordelta.digital';
-        $lando_domain = $site_slug . '.lndo.site';
+        $local_domain = $site_slug . '.lndo.site';
 
-        $conf['domains']['dev'] = $dev_domain;
-        $conf['domains']['lando'] = $lando_domain;
+        $conf['dev_domain'] = $dev_domain;
+        $conf['local_domain'] = $local_domain;
 
         // choose one from above to be the primary domain
         $q_domain = new ChoiceQuestion(
             'Please select the domain that will be served on this machine. [Type number and enter]',
-            [$dev_domain, $lando_domain],
+            [$dev_domain, $local_domain],
             0
         );
         $q_domain->setErrorMessage('Domain %s is invalid.');
         $a_domain = $helper->ask($input, $output, $q_domain);
 
-        $conf['domains']['primary'] = $a_domain;
+        $conf['domain'] = $a_domain;
 
         // ask for db credentials
         $output->writeln('<comment>Let\'s get your database details.</comment>');

@@ -109,7 +109,7 @@ class Takeover extends SymfonyCommand
     }
     public function validateEnvVar(array $env)
     {
-        return empty(array_diff(['domains', 'db_host', 'db_user', 'db_pass'], array_keys($env)));
+        return empty(array_diff(['domain', 'db_host', 'db_user', 'db_pass'], array_keys($env)));
     }
 
     public function createWpConfigFile($config)
@@ -124,7 +124,7 @@ class Takeover extends SymfonyCommand
         file_put_contents($tmp_pass_file, $pass);
 
         // $process = new Process(['wp', 'config', 'create', '--dbname=' . $config['domain'], '--dbuser=' . $config['db_user'], '--dbhost=' . $config['db_host'], '--dbpass=' . $pass]);
-        $db_name = $config['db_name'] ? $config['db_name'] : $config['domains']['primary'];
+        $db_name = $config['db_name'] ? $config['db_name'] : $config['domain'];
 
         $cmd = 'wp config create --dbname=' . $db_name . ' --dbuser=' . $config['db_user'] . ' --dbhost=' . $config['db_host'] . ' --prompt=dbpass < ' . $tmp_pass_file;
 
