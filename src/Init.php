@@ -71,7 +71,9 @@ class Init extends SymfonyCommand
             Git::pull($input, $output);
 
             // create folder structure
-            mkdir('site');
+            if (!is_dir('site')) {
+                mkdir('site');
+            }
 
             // create env file
             $command = $this->getApplication()->find('env');
