@@ -54,6 +54,9 @@ class Env
 
     public static function loadConfig($envFile = './.butler.env')
     {
+        if (!file_exists($envFile)) {
+            throw new \Exception('Env file '.$envFile .' doesn\'t exist');
+        }
         $config = json_decode(file_get_contents($envFile), true);
         array_map(function ($v) {
             return trim($v);

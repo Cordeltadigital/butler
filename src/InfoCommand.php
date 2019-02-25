@@ -28,9 +28,14 @@ class InfoCommand extends SymfonyCommand
     {
         // Env::getGlobalEnv();
         $globalEnvPath = Env::getGlobalEnvFilePath();
-
+        $globalEnvFileExists = file_exists($globalEnvPath);
+        $env = Env::loadConfig();
         $info = [
+            'Butler version' => BUTLER_VER,
             'Global env path' => $globalEnvPath,
+            'Global env file exists? ' => $globalEnvFileExists ? 'Yes' : 'No',
+            'Loaded env' => json_encode($env),
+            'Butler directory' => BUTLER_DIR,
         ];
         $output->writeln('====================');
         foreach ($info as $key => $value) {

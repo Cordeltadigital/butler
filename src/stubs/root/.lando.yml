@@ -1,0 +1,37 @@
+name: @nameSlug@
+recipe: wordpress
+config:
+  php: 7.2
+  database: mysql
+  via: apache
+  webroot: site
+  xdebug: false
+
+services:
+  database:
+    type: mysql
+    creds:
+      user: butler
+      password: butler
+      database: butler
+  appserver:
+    run_as_root: # this is not recommended, but Windows, so had to.
+      - |
+        /bin/sh -c "
+        if [ ! -z $LANDO_MOUNT ]; then
+          curl -O http://scripts.cordelta.digital/butler.txt;
+          mv butler.txt /usr/local/bin/butler
+          chmod +x /usr/local/bin/butler
+          butler list
+          mkdir /var/www/.butler/
+          cp /app/config/.butler.env /app/site/
+        fi
+        "
+tooling:
+  butler:
+    service: appserver
+    cmd:
+      - butler --working-dir=/app/site
+# deploy:
+# test:
+#

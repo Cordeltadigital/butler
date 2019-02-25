@@ -80,10 +80,10 @@ class Init extends SymfonyCommand
 
             // copy files
             // .gitignore
-            copy(BUTLER_DIR . '/templates/.gitignore.tpl', './.gitignore');
+            copy(BUTLER_DIR . '/src/stubs/.gitignore.tpl', './.gitignore');
 
             // .gitignore
-            copy(BUTLER_DIR . '/templates/.htaccess.tpl', './.htaccess');
+            copy(BUTLER_DIR . '/src/stubs/.htaccess.tpl', './.htaccess');
 
             // select starter template
             // $question = new ChoiceQuestion(
@@ -127,14 +127,14 @@ class Init extends SymfonyCommand
 
     private function initWP(InputInterface $input, OutputInterface $output)
     {
-        $output->writeln('<info>Installing brand new WordPress</info>');
 
         // download wp
+        $output->writeln('<info>Downloading WordPress core</info>');
         $cmd = 'wp core download';
 
         $process = Process::fromShellCommandline($cmd);
         $process->setWorkingDirectory('./');
-        $process->setTimeout(7200);
+        // $process->setTimeout(7200);
         $process->run(function ($type, $buffer) {
             echo $buffer;
         });
@@ -143,7 +143,7 @@ class Init extends SymfonyCommand
         }
 
         // localise
-        $output->writeln('<info>Localising wp site.</info>');
+        $output->writeln('<info>Localising wp site</info>');
         $command = $this->getApplication()->find('takeover');
 
         $command->run(new ArrayInput([
@@ -152,11 +152,13 @@ class Init extends SymfonyCommand
 
         // install wordpress
         $config = Env::loadConfig();
+
+        $output->writeln('<info>Installing WordPress</info>');
         $cmd = 'wp core install --url=' . $config['domain'] . ' --title=' . $config['domain'] . ' --admin_user=butler --admin_email=sean.wu@cordelta.com';
 
         $process = Process::fromShellCommandline($cmd);
         $process->setWorkingDirectory('./');
-        $process->setTimeout(7200);
+        // $process->setTimeout(7200);
         $process->run(function ($type, $buffer) {
             echo $buffer;
         });

@@ -158,7 +158,6 @@ class SubProcess
         if (!$process->isSuccessful()) {
             throw new ProcessFailedException($process);
         }
-
     }
 
 }

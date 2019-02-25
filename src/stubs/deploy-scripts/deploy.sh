@@ -1,4 +1,4 @@
 echo "Deploy script started"
-cd /var/www/{DO_WEB_ROOT_DIR}
+cd /var/www/@nameSlug@
 sh pull.sh
 echo "Deploy script finished execution"

@@ -2,7 +2,6 @@
 namespace Console;
 
 use Console\Util\Env as Env;
-use Console\Util\Validator as Validator;
 use Symfony\Component\Console\Command\Command as SymfonyCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -51,6 +50,8 @@ class EnvCommand extends SymfonyCommand
 
         // create new .env file
         $conf = [
+            'local_domain' => '',
+            'dev_domain' => '',
             'domain' => '',
             'db_user' => '',
             'db_pass' => '',
@@ -60,8 +61,18 @@ class EnvCommand extends SymfonyCommand
         $output->writeln('<comment>You can change these settings in .butler.env file after generation.</comment>');
 
         // ask for domain
-        $q_domain = new Question('Please enter the domain of this site. (e.g. example.cordelta.digital):', 'example.cordelta.digital');
+        $q_site_name = new Question('Please enter the name of this site:', 'unnamed');
+        $a_site_name = $helper->ask($input, $output, $q_site_name);
 
+        $site_name = \Console\Util\Util::slugify($a_site_name);
+
+        $dev_domain = $site_name . '.cordelta.digital';
+        $local_domain = $site_name . '.lndo.site';
+
+        $conf['dev_domain'] = $dev_domain;
+        $conf['local_domain'] = $local_domain;
+
+        // choose one from above to be the primary domain
         $q_domain->setValidator(function ($answer) {
             if (!Validator::isDomainValid($answer)) {
                 throw new \RuntimeException(
