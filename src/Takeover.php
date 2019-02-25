@@ -49,12 +49,7 @@ class Takeover extends SymfonyCommand
         $config = Env::loadConfig($configFile);
 
         // show config
-        $output->writeln("============ Config =============");
-
-        foreach ($config as $key => $value) {
-            $output->writeln("$key : $value");
-        }
-        $output->writeln("=================================");
+        Env::printConfig($config, $output);
 
         // Confirm to continue
         $helper = $this->getHelper('question');

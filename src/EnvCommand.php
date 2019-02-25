@@ -1,11 +1,12 @@
 <?php
 namespace Console;
 
-use Console\Util\Env as Env;
+use Console\Util\Env;
 use Symfony\Component\Console\Command\Command as SymfonyCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Question\ChoiceQuestion;
 use Symfony\Component\Console\Question\ConfirmationQuestion;
 use Symfony\Component\Console\Question\Question;
 
@@ -50,6 +51,8 @@ class EnvCommand extends SymfonyCommand
 
         // create new .env file
         $conf = [
+            'site_name' => '',
+            'site_slug' => '',
             'local_domain' => '',
             'dev_domain' => '',
             'domain' => '',
@@ -63,37 +66,30 @@ class EnvCommand extends SymfonyCommand
         // ask for domain
         $q_site_name = new Question('Please enter the name of this site:', 'unnamed');
         $a_site_name = $helper->ask($input, $output, $q_site_name);
+        $conf['site_name'] = $a_site_name;
 
-        $site_name = \Console\Util\Util::slugify($a_site_name);
+        $site_slug = \Console\Util\Util::slugify($a_site_name);
+        $conf['site_slug'] = $site_slug;
 
-        $dev_domain = $site_name . '.cordelta.digital';
-        $local_domain = $site_name . '.lndo.site';
+        $dev_domain = $site_slug . '.cordelta.digital';
+        $local_domain = $site_slug . '.lndo.site';
 
         $conf['dev_domain'] = $dev_domain;
         $conf['local_domain'] = $local_domain;
 
         // choose one from above to be the primary domain
-        $q_domain->setValidator(function ($answer) {
-            if (!Validator::isDomainValid($answer)) {
-                throw new \RuntimeException(
-                    'Invalid domain, please try again.'
-                );
-            }
-
-            return $answer;
-        });
+        $q_domain = new ChoiceQuestion(
+            'Please select the domain that will be served on this machine. [Type number and enter]',
+            [$dev_domain, $local_domain],
+            0
+        );
+        $q_domain->setErrorMessage('Domain %s is invalid.');
         $a_domain = $helper->ask($input, $output, $q_domain);
 
         $conf['domain'] = $a_domain;
 
         // ask for db credentials
-        // db host
-        $q = new Question('Please enter the database host (default=localhost): ', 'localhost');
-        $conf['db_host'] = $this->setupEnvVar('db_host', $input, $output, $q);
-
-        // db name
-        $q = new Question('Please enter the database name: ', 'butler');
-        $conf['db_name'] = $this->setupEnvVar('db_name', $input, $output, $q);
+        $output->writeln('<comment>Let\'s get your database details.</comment>');
 
         // db user
         $q = new Question('Please enter the database username: ', 'butler');
@@ -103,6 +99,14 @@ class EnvCommand extends SymfonyCommand
         $q = new Question('Please enter the password for this database user: ', '');
         $q->setHidden(true);
         $conf['db_pass'] = $this->setupEnvVar('db_pass', $input, $output, $q);
+
+        // db name
+        $q = new Question('Please enter the database name: ', 'butler');
+        $conf['db_name'] = $helper->ask($input, $output, $q);
+
+        // db host
+        $q = new Question('Please enter the database host (default=localhost): ', 'localhost');
+        $conf['db_host'] = $this->setupEnvVar('db_host', $input, $output, $q);
 
         $output->writeln('<info>Generating new .butler.env file ' . $configFile . '...</info>');
         Env::generateEnvFile($conf, $configFile);

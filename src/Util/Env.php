@@ -55,7 +55,7 @@ class Env
     public static function loadConfig($envFile = './.butler.env')
     {
         if (!file_exists($envFile)) {
-            throw new \Exception('Env file '.$envFile .' doesn\'t exist');
+            throw new \Exception('Env file ' . $envFile . ' doesn\'t exist');
         }
         $config = json_decode(file_get_contents($envFile), true);
         array_map(function ($v) {
@@ -63,6 +63,16 @@ class Env
         }, $config); //trim spaces
 
         return $config;
+    }
+
+    public static function printConfig($config, $output)
+    {
+        $output->writeln("============ Config =============");
+
+        foreach ($config as $key => $value) {
+            $output->writeln("$key : $value");
+        }
+        $output->writeln("=================================");
     }
 
 }
