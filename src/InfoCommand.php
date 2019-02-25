@@ -26,6 +26,8 @@ class InfoCommand extends SymfonyCommand
 
     public function printInfo(OutputInterface $output)
     {
+
+        Output::signature($output);
         // Env::getGlobalEnv();
         $globalEnvPath = Env::getGlobalEnvFilePath();
         $globalEnvFileExists = file_exists($globalEnvPath);

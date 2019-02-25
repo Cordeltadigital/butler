@@ -1,7 +1,6 @@
 <?php
 namespace Console;
 
-use Console\Util\Output;
 use Console\Util\SubProcess;
 use Symfony\Component\Console\Command\Command as SymfonyCommand;
 use Symfony\Component\Console\Input\InputInterface;
@@ -23,8 +22,6 @@ class Update extends SymfonyCommand
     public function execute(InputInterface $input, OutputInterface $output)
     {
         // check if there's .env file
-
-        Output::signature($output);
         SubProcess::update($input, $output);
     }
 

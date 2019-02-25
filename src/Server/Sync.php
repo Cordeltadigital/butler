@@ -29,7 +29,6 @@ class Sync extends SymfonyCommand
 
     public function execute(InputInterface $input, OutputInterface $output)
     {
-        // Output::signature($output);
         $rootDir = $input->getOption('rootDir');
         SubProcess::sync($input, $output, $rootDir);
     }

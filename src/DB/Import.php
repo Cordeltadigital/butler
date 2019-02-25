@@ -5,7 +5,6 @@
  */
 namespace Console\DB;
 
-use Console\Util\Output;
 use Console\Util\SubProcess;
 use Symfony\Component\Console\Command\Command as SymfonyCommand;
 use Symfony\Component\Console\Input\InputArgument;
@@ -28,7 +27,6 @@ class Import extends SymfonyCommand
 
     public function execute(InputInterface $input, OutputInterface $output)
     {
-        Output::signature($output);
         $envFile = $input->getOption('envFile');
         if (!file_exists($envFile)) {
             $output->writeln('<error>[db:import] .butler.env file doesn\'t exist.</error>');

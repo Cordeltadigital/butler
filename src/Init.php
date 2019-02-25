@@ -6,7 +6,6 @@ namespace Console;
 
 use Console\Util\Env;
 use Console\Util\Git;
-use Console\Util\Output;
 use Exception;
 use Symfony\Component\Console\Command\Command as SymfonyCommand;
 use Symfony\Component\Console\Input\ArrayInput;
@@ -31,7 +30,6 @@ class Init extends SymfonyCommand
 
     public function execute(InputInterface $input, OutputInterface $output)
     {
-        Output::signature($output);
         $helper = $this->getHelper('question');
         // check requirements
         // make sure you have a repo here https://bitbucket.org/cordeltadigital/xxxx
@@ -72,7 +70,7 @@ class Init extends SymfonyCommand
             Git::pull($input, $output);
 
             // if no file, install brand new wp and export database
-            if (!is_dir('wp-content')) {
+            if (!is_dir('site')) {
                 $output->writeln('<info>No wordpress content detected, initiating a new site.</info>');
 
                 $this->initWP($input, $output);
@@ -127,6 +125,10 @@ class Init extends SymfonyCommand
 
     private function initWP(InputInterface $input, OutputInterface $output)
     {
+        // create folder structure
+        mkdir('site');
+
+        chdir('site');
 
         // download wp
         $output->writeln('<info>Downloading WordPress core</info>');
