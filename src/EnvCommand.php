@@ -100,13 +100,13 @@ class EnvCommand extends SymfonyCommand
         $q->setHidden(true);
         $conf['db_pass'] = $this->setupEnvVar('db_pass', $input, $output, $q);
 
-        // db name
-        $q = new Question('Please enter the database name: ', 'butler');
-        $conf['db_name'] = $helper->ask($input, $output, $q);
-
         // db host
         $q = new Question('Please enter the database host (default=localhost): ', 'localhost');
         $conf['db_host'] = $this->setupEnvVar('db_host', $input, $output, $q);
+
+        // db name
+        $q = new Question('Please enter the database name: ', 'butler');
+        $conf['db_name'] = $helper->ask($input, $output, $q);
 
         $output->writeln('<info>Generating new .butler.env file ' . $configFile . '...</info>');
         Env::generateEnvFile($conf, $configFile);

@@ -135,7 +135,6 @@ class Init extends SymfonyCommand
         $cmd = 'wp core download';
 
         $process = Process::fromShellCommandline($cmd);
-        $process->setWorkingDirectory('./');
         // $process->setTimeout(7200);
         $process->run(function ($type, $buffer) {
             echo $buffer;
@@ -159,8 +158,6 @@ class Init extends SymfonyCommand
         $cmd = 'wp core install --url=' . $config['domain'] . ' --title=' . $config['domain'] . ' --admin_user=butler --admin_email=sean.wu@cordelta.com';
 
         $process = Process::fromShellCommandline($cmd);
-        $process->setWorkingDirectory('./');
-        // $process->setTimeout(7200);
         $process->run(function ($type, $buffer) {
             echo $buffer;
         });

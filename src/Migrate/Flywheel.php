@@ -63,7 +63,7 @@ class Flywheel extends SymfonyCommand
         $output->writeln('<info>Unzipping flywheel backup file.</info>');
         $cmd = 'unzip ' . $zipFile . ' -d ' . $flywheel_dir;
         $process = Process::fromShellCommandline($cmd);
-        $process->setWorkingDirectory('./');
+        $process->setWorkingDirectory('./site');
         $process->setTimeout(7200);
         $process->run(function ($type, $buffer) {
             echo $buffer;
@@ -93,7 +93,7 @@ class Flywheel extends SymfonyCommand
         $output->writeln('<info>Copying flywheel files over.</info>');
         $cmd = 'cp -r ' . $wp_content_path . ' .';
         $process = Process::fromShellCommandline($cmd);
-        $process->setWorkingDirectory('./');
+        $process->setWorkingDirectory('./site');
         $process->setTimeout(7200);
         $process->run(function ($type, $buffer) {
             echo $buffer;
@@ -111,7 +111,7 @@ class Flywheel extends SymfonyCommand
         $output->writeln('<info>Backing up current database tables...</info>');
         $cmd = 'wp db export --add-drop-table ' . $temp_db_backup_file;
         $process = Process::fromShellCommandline($cmd);
-        $process->setWorkingDirectory('./');
+        $process->setWorkingDirectory('./site');
         $process->setTimeout(7200);
         $process->run(function ($type, $buffer) {
             echo $buffer;
@@ -125,7 +125,7 @@ class Flywheel extends SymfonyCommand
         $output->writeln('<info>Cleaning current database tables...</info>');
         $cmd = 'wp db clean --yes';
         $process = Process::fromShellCommandline($cmd);
-        $process->setWorkingDirectory('./');
+        $process->setWorkingDirectory('./site');
         $process->setTimeout(7200);
         $process->run(function ($type, $buffer) {
             echo $buffer;
@@ -138,7 +138,7 @@ class Flywheel extends SymfonyCommand
         $output->writeln('<info>Importing flywheel database...</info>');
         $cmd = 'wp db import ' . $sql_file;
         $process = Process::fromShellCommandline($cmd);
-        $process->setWorkingDirectory('./');
+        $process->setWorkingDirectory('./site');
         $process->setTimeout(7200);
         $process->run(function ($type, $buffer) {
             echo $buffer;
