@@ -123,7 +123,7 @@ class Takeover extends SymfonyCommand
         $tmp_pass_file = './.ps.txt';
         file_put_contents($tmp_pass_file, $pass);
 
-        $process = new Process(['wp', 'config', 'create', '--dbname=' . $config['domain'], '--dbuser=' . $config['db_user'], '--dbhost=' . $config['db_host'], '--dbpass=' . $pass]);
+        // $process = new Process(['wp', 'config', 'create', '--dbname=' . $config['domain'], '--dbuser=' . $config['db_user'], '--dbhost=' . $config['db_host'], '--dbpass=' . $pass]);
         $db_name = $config['db_name'] ? $config['db_name'] : $config['domain'];
 
         $cmd = 'wp config create --dbname=' . $db_name . ' --dbuser=' . $config['db_user'] . ' --dbhost=' . $config['db_host'] . ' --prompt=dbpass < ' . $tmp_pass_file;
@@ -135,6 +135,20 @@ class Takeover extends SymfonyCommand
         });
         // remove tmp password file
         unlink($tmp_pass_file);
+
+        if (!$process->isSuccessful()) {
+            throw new ProcessFailedException($process);
+        }
+
+        // update FS_METHOD to direct
+
+        $cmd = 'wp config set FS_METHOD direct';
+
+        $process = Process::fromShellCommandline($cmd);
+
+        $process->run(function ($type, $buffer) {
+            echo $buffer;
+        });
 
         if (!$process->isSuccessful()) {
             throw new ProcessFailedException($process);
