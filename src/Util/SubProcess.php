@@ -84,7 +84,6 @@ class SubProcess
         });
 
         $config = Env::loadConfig($envFile);
-        $newSiteUrl = 'http://' . $config['domain'];
 
         $sql_file = 'sql/export.sql';
         if (!file_exists($sql_file)) {
@@ -105,22 +104,7 @@ class SubProcess
             throw new ProcessFailedException($process);
         }
 
-        // get current url stored in db
-        $output->writeln('[db:import] Getting the site url in database.');
-        $cmd = 'wp option get siteurl';
-        $process = Process::fromShellCommandline($cmd);
-        $process->run(function ($type, $buffer) {
-            echo $buffer;
-        });
-        $currentSiteUrl = $process->getOutput();
-
-        // replace current url to url in wp-config
-        $output->writeln('<info>[db:import] Replacing site urls in the database...</info>');
-        $cmd = "wp search-replace '$currentSiteUrl' '$newSiteUrl'";
-        $process = Process::fromShellCommandline($cmd);
-        $process->run(function ($type, $buffer) {
-            echo $buffer;
-        });
+        self::replaceURL($input, $output);
 
         // update table prefix in wp_config.php
         $prefix = self::getPrefixFromSQL($input, $output, $sql_file);
@@ -162,6 +146,26 @@ class SubProcess
         if (!$process->isSuccessful()) {
             throw new ProcessFailedException($process);
         }
+    }
+
+    public static function replaceURL($input, $output, $newUrl)
+    {
+        // get current url stored in db
+        $output->writeln('[replace-url] Getting the site url in database.');
+        $cmd = 'wp option get siteurl';
+        $process = Process::fromShellCommandline($cmd);
+        $process->run(function ($type, $buffer) {
+            echo $buffer;
+        });
+        $currentSiteUrl = trim($process->getOutput());
+
+        // replace current url to url in wp-config
+        $output->writeln('<info>[replace-url] Replacing site urls in the database...</info>');
+        $cmd = 'wp search-replace "' . $currentSiteUrl . '" "' . $newUrl . '"';
+        $process = Process::fromShellCommandline($cmd);
+        $process->run(function ($type, $buffer) {
+            echo $buffer;
+        });
     }
 
 }

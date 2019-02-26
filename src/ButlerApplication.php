@@ -43,6 +43,7 @@ final class ButlerApplication extends Application
         $commands = array_merge(parent::getDefaultCommands(), [
             new \Console\DB\Export(),
             new \Console\DB\Import(),
+            new \Console\DB\ReplaceURL(),
             new \Console\Template\Import(),
             new \Console\Template\DeployScripts(),
             new \Console\Migrate\Flywheel(),

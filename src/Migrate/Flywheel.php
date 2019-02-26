@@ -160,8 +160,9 @@ class Flywheel extends SymfonyCommand
         });
         $currentSiteUrl = $process->getOutput();
         // 8.2 replace url in database
+        // @todo convert this into subprocess
         $output->writeln('<info>Replacing site urls in the database...</info>');
-        $cmd = "wp search-replace $currentSiteUrl $newSiteUrl";
+        $cmd = "wp search-replace '$currentSiteUrl' '$newSiteUrl'";
         $process = Process::fromShellCommandline($cmd);
         $process->run(function ($type, $buffer) {
             echo $buffer;
