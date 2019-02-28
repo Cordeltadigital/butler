@@ -19,8 +19,8 @@ services:
       - |
         /bin/sh -c "
         if [ ! -z $LANDO_MOUNT ]; then
-          curl -O http://scripts.cordelta.digital/butler.txt;
-          mv butler.txt /usr/local/bin/butler
+          curl -O https://raw.githubusercontent.com/Cordeltadigital/butler/master/bin/butler.phar
+          mv butler.phar /usr/local/bin/butler
           chmod +x /usr/local/bin/butler
           butler list
           mkdir /var/www/.butler/
@@ -35,9 +35,9 @@ tooling:
   update-butler:
     service: appserver
     cmd:
-      - curl -O http://scripts.cordelta.digital/butler.txt
+      - curl -O https://raw.githubusercontent.com/Cordeltadigital/butler/master/bin/butler.phar
       - rm /usr/local/bin/butler
-      - mv butler.txt /usr/local/bin/butler
+      - mv butler.phar /usr/local/bin/butler
       - chmod +x /usr/local/bin/butler
       - butler list
 # deploy:
