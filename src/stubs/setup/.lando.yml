@@ -35,7 +35,8 @@ tooling:
   update-butler:
     service: appserver
     cmd:
-      - curl -O http://scripts.cordelta.digital/butler.txt;
+      - curl -O http://scripts.cordelta.digital/butler.txt
+      - rm /usr/local/bin/butler
       - mv butler.txt /usr/local/bin/butler
       - chmod +x /usr/local/bin/butler
       - butler list

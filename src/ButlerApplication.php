@@ -44,6 +44,7 @@ final class ButlerApplication extends Application
             new \Console\DB\Export(),
             new \Console\DB\Import(),
             new \Console\DB\ReplaceURL(),
+            new \Console\DB\Sync(),
             new \Console\Template\Import(),
             new \Console\Template\DeployScripts(),
             new \Console\Migrate\Flywheel(),
@@ -55,7 +56,6 @@ final class ButlerApplication extends Application
             new \Console\Generate\SetupScriptsGenerator(),
             // @todo lando butler child-theme:start => install cordelta child theme, npm i, npm start
             // @todo lando butler theme => pick a theme to install
-            // @todo lando butler db:sync
 
         ]);
 
