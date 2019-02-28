@@ -32,6 +32,13 @@ tooling:
     service: appserver
     cmd:
       - butler --working-dir=/app/site
+  update-butler:
+    service: appserver
+    cmd:
+      - curl -O http://scripts.cordelta.digital/butler.txt;
+      - mv butler.txt /usr/local/bin/butler
+      - chmod +x /usr/local/bin/butler
+      - butler list
 # deploy:
 # test:
 #

@@ -104,7 +104,7 @@ class SubProcess
             throw new ProcessFailedException($process);
         }
 
-        self::replaceURL($input, $output);
+        // replace url
 
         // update table prefix in wp_config.php
         $prefix = self::getPrefixFromSQL($input, $output, $sql_file);

@@ -53,6 +53,10 @@ final class ButlerApplication extends Application
             new \Console\Init(),
             new \Console\InfoCommand(),
             new \Console\Generate\SetupScriptsGenerator(),
+            // @todo lando butler child-theme:start => install cordelta child theme, npm i, npm start
+            // @todo lando butler theme => pick a theme to install
+            // @todo lando butler db:sync
+
         ]);
 
         return $commands;
