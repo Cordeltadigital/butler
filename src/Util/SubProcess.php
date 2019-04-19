@@ -168,4 +168,13 @@ class SubProcess
         });
     }
 
+    public static function createButlerUser($input, $output){
+        $output->writeln('Creating butler user...');
+        $cmd = 'wp user create butler butler@cordelta.digital --role=administrator --user_pass=butler';
+        $process = Process::fromShellCommandline($cmd);
+        $process->run(function ($type, $buffer) {
+            echo $buffer;
+        });
+    }
+
 }

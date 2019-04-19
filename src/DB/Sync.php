@@ -9,11 +9,13 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ChoiceQuestion;
+use Symfony\Component\Process\Exception\ProcessFailedException;
+use Symfony\Component\Process\Process;
 
 class Sync extends SymfonyCommand
 {
 
-    private $env_list = ['local', 'dev', 'prod'];
+    private $env_list = ['local', 'dev']; // 'prod'
 
     public function __construct()
     {
@@ -68,6 +70,18 @@ class Sync extends SymfonyCommand
             $to = $helper->ask($input, $output, $q);
         }
 
+        $from_domain = $config[$from . '_domain'];
+
+        $cmd = 'ssh butler@' . $from_domain; // @todo require developer to add their ssh key into dev server, building a web interface with authentication.
+        $process = Process::fromShellCommandline($cmd);
+        $process->run(function ($type, $buffer) {
+            echo $buffer;
+        });
+
+        if (!$process->isSuccessful()) {
+            throw new ProcessFailedException($process);
+        }
+
         // replace url
         $domain_list = [];
 
@@ -87,6 +101,5 @@ class Sync extends SymfonyCommand
 
         $new_url = 'http://' . $target_domain;
         SubProcess::replaceURL($input, $output, $new_url);
-
     }
 }

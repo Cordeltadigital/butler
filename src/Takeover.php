@@ -5,6 +5,7 @@
 namespace Console;
 
 use Console\Util\Env;
+use Console\Util\SubProcess;
 use Exception;
 use Symfony\Component\Console\Command\Command as SymfonyCommand;
 use Symfony\Component\Console\Input\ArrayInput;
@@ -63,7 +64,8 @@ class Takeover extends SymfonyCommand
         // localise wp instance
         $this->localise($config, $input, $output);
 
-        //
+        // create butler user
+        SubProcess::createButlerUser($input, $output);
     }
 
     public function localise($config, $input, $output)
@@ -84,28 +86,13 @@ class Takeover extends SymfonyCommand
 
         $arguments = [
             'command' => 'db:import',
-            // 'name' => 'Fabien',
-            // '--yell' => true,
         ];
 
         $importInput = new ArrayInput($arguments);
         $returnCode = $command->run($importInput, $output);
 
-        // // Create user account
-        // $helper = $this->getHelper('question');
-        // $output->writeln('<info>Creating new admin user account.</info>');
-        // $q = new Question("Please enter the admin user email:\n", '');
-        // $user_email = $helper->ask($input, $output, $q);
-
-        // $cmd = 'wp user create ' . trim($user_email) . ' ' . trim($user_email) . ' --role=administrator';
-
-        // $process = Process::fromShellCommandline($cmd);
-        // $process->setWorkingDirectory('./');
-        // $process->run(function ($type, $buffer) {
-        //     echo $buffer;
-        // });
-
-        // $output->writeln('<info>Admin user created.</info>');
+        // replace url
+        $command->run(new ArrayInput(['command' => 'db:replace-url']), $output);
     }
     public function validateEnvVar(array $env)
     {
