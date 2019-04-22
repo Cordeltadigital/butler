@@ -25,9 +25,9 @@ class Sync extends SymfonyCommand
     public function configure()
     {
         $this->setName('db:sync')
-            ->setDescription('Sync database between environments.')
-            ->addOption('from', null, InputArgument::OPTIONAL, 'Environment to export database: ' . implode($this->env_list, ' | '), null)
-            ->addOption('to', null, InputArgument::OPTIONAL, 'Environment to import database: ' . implode($this->env_list, ' | '), null);
+            ->setDescription('Sync local database with latest dev environment.');
+            // ->addOption('from', null, InputArgument::OPTIONAL, 'Environment to export database: ' . implode( ' | ', $this->env_list), null)
+            // ->addOption('to', null, InputArgument::OPTIONAL, 'Environment to import database: ' . implode( ' | ', $this->env_list), null);
     }
 
     public function execute(InputInterface $input, OutputInterface $output)
@@ -44,35 +44,13 @@ class Sync extends SymfonyCommand
 
         $config = Env::loadConfig();
 
-        $from = $input->getOption('from');
-        $to = $input->getOption('to');
-
-        if (!$from || !\in_array($from, $this->env_list)) {
-            // select from env
-            $q = new ChoiceQuestion(
-                'Please select the source environment for database (From). [Type number and enter]',
-                $this->env_list
-            );
-            $q->setErrorMessage('Selection %s is invalid.');
-            $from = $helper->ask($input, $output, $q);
-        }
-        $temp_array = $this->env_list;
-        $from_index = array_search($from, $this->env_list);
-        array_splice($temp_array, $from_index, 1);
-
-        if (!$to || !\in_array($to, $this->env_list)) {
-            // select to env
-            $q = new ChoiceQuestion(
-                'Please select the source environment for database (To). [Type number and enter]',
-                $temp_array
-            );
-            $q->setErrorMessage('Selection %s is invalid.');
-            $to = $helper->ask($input, $output, $q);
-        }
+        $from = 'dev';
+        $to = 'local';
 
         $from_domain = $config[$from . '_domain'];
 
-        $cmd = 'ssh butler@' . $from_domain; // @todo require developer to add their ssh key into dev server, building a web interface with authentication.
+        $cmd = 'ssh butler@' . $from_domain.' cd /var/www/'.$config['site_slug'].'/ && bash '; // @todo require developer to add their ssh key into dev server, building a web interface with authentication.
+        
         $process = Process::fromShellCommandline($cmd);
         $process->run(function ($type, $buffer) {
             echo $buffer;
@@ -99,7 +77,7 @@ class Sync extends SymfonyCommand
         $q_domain->setErrorMessage('Selection %s is invalid.');
         $target_domain = $helper->ask($input, $output, $q_domain);
 
-        $new_url = 'http://' . $target_domain;
+        $new_url =   $target_domain;
         SubProcess::replaceURL($input, $output, $new_url);
     }
 }

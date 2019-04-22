@@ -43,7 +43,7 @@ class ReplaceURL extends SymfonyCommand
         $q_domain->setErrorMessage('Selection %s is invalid.');
         $target_domain = $helper->ask($input, $output, $q_domain);
 
-        $new_url = 'http://' . $target_domain;
+        $new_url =  $target_domain;
         SubProcess::replaceURL($input, $output, $new_url);
 
     }

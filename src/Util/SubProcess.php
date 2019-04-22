@@ -157,7 +157,9 @@ class SubProcess
         $process->run(function ($type, $buffer) {
             echo $buffer;
         });
-        $currentSiteUrl = trim($process->getOutput());
+        $currentSiteUrlParts = explode('//', trim($process->getOutput()) );
+
+        $currentSiteUrl = $currentSiteUrlParts[1];
 
         // replace current url to url in wp-config
         $output->writeln('<info>[replace-url] Replacing site urls in the database...</info>');
