@@ -11,6 +11,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ChoiceQuestion;
 use Symfony\Component\Process\Exception\ProcessFailedException;
 use Symfony\Component\Process\Process;
+use Console\Util\Git;
 
 class Sync extends SymfonyCommand
 {
@@ -48,8 +49,11 @@ class Sync extends SymfonyCommand
         $to = 'local';
 
         $from_domain = $config[$from . '_domain'];
+        // ssh butler@dev.cordelta.digital "cd /var/www/sample-site/site &&  " 
+        // git pull origin master 
+        // butler db:import
 
-        $cmd = 'ssh butler@' . $from_domain.' cd /var/www/'.$config['site_slug'].'/ && bash '; // @todo require developer to add their ssh key into dev server, building a web interface with authentication.
+        $cmd = 'ssh butler@' . $from_domain.' cd /var/www/'.$config['site_slug'].'/site && wp db export --add-drop-table --extended-insert=FALSE ./sql/export.sql && git add . && git commit -m ":tophat: Butler db:sync" && git push origin master'; // @todo require developer to add their ssh key into dev server, building a web interface with authentication.
         
         $process = Process::fromShellCommandline($cmd);
         $process->run(function ($type, $buffer) {
@@ -58,8 +62,15 @@ class Sync extends SymfonyCommand
 
         if (!$process->isSuccessful()) {
             throw new ProcessFailedException($process);
-        }
+        
+        // git pull
+        Git::pull($input, $output);
+        
+        // import
+        SubProcess::importDB($input, $output);
+        
 
+        
         // replace url
         $domain_list = [];
 
@@ -79,5 +90,6 @@ class Sync extends SymfonyCommand
 
         $new_url =   $target_domain;
         SubProcess::replaceURL($input, $output, $new_url);
+
     }
 }
