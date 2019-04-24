@@ -62,7 +62,7 @@ class Sync extends SymfonyCommand
         // git pull origin master 
         // butler db:import
 
-        $cmd = 'ssh butler@' . $from_domain.' cd /var/www/'.$config['site_slug'].'/site && git pull origin master && wp db export --add-drop-table --extended-insert=FALSE ./sql/export.sql && git add . && git commit -m ":tophat: Butler db:sync" && git push origin master'; // @todo require developer to add their ssh key into dev server, building a web interface with authentication.
+        $cmd = 'ssh butler@' . $from_domain.' "cd /var/www/'.$config['site_slug'].'/site && git pull origin master && wp db export --add-drop-table --extended-insert=FALSE ./sql/export.sql && git add . && git commit -m \":tophat: Butler db:sync\" && git push origin master"'; // @todo require developer to add their ssh key into dev server, building a web interface with authentication.
         
         $process = Process::fromShellCommandline($cmd);
         $process->run(function ($type, $buffer) {
