@@ -6,6 +6,7 @@ use Console\Util\Env;
 use Console\Util\SubProcess;
 use Symfony\Component\Console\Command\Command as SymfonyCommand;
 use Symfony\Component\Console\Input\InputArgument;
+use Symfony\Component\Console\Question\ConfirmationQuestion;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ChoiceQuestion;
@@ -48,7 +49,7 @@ class Sync extends SymfonyCommand
         $from = 'dev';
         $to = 'local';
 
-        $question = new ConfirmationQuestion('Continue with this action?', false);
+        $question = new ConfirmationQuestion('<question>Continue with this action? (y/N): </question>', false);
 
         if (!$helper->ask($input, $output, $question)) {
             $output->writeln('K, bye!');
