@@ -49,7 +49,7 @@ class Sync extends SymfonyCommand
         $from = 'dev';
         $to = 'local';
 
-        $question = new ConfirmationQuestion('<question>Continue with this action? (y/N): </question>', false);
+        $question = new ConfirmationQuestion('<question>Continue with this action? (y/N):</question> ', false);
 
         if (!$helper->ask($input, $output, $question)) {
             $output->writeln('K, bye!');

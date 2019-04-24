@@ -48,7 +48,7 @@ final class ButlerApplication extends Application
             // new \Console\Template\Import(),
             // new \Console\Template\DeployScripts(),
             new \Console\Migrate\Flywheel(),
-            new \Console\Server\Sync(),
+            // new \Console\Server\Sync(),
             new \Console\EnvCommand(),
             new \Console\Takeover(),
             new \Console\Init(),
