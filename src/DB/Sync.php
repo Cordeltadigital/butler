@@ -48,12 +48,20 @@ class Sync extends SymfonyCommand
         $from = 'dev';
         $to = 'local';
 
+        $question = new ConfirmationQuestion('Continue with this action?', false);
+
+        if (!$helper->ask($input, $output, $question)) {
+            $output->writeln('K, bye!');
+            return;
+        }
+
+
         $from_domain = $config[$from . '_domain'];
         // ssh butler@dev.cordelta.digital "cd /var/www/sample-site/site &&  " 
         // git pull origin master 
         // butler db:import
 
-        $cmd = 'ssh butler@' . $from_domain.' cd /var/www/'.$config['site_slug'].'/site && wp db export --add-drop-table --extended-insert=FALSE ./sql/export.sql && git add . && git commit -m ":tophat: Butler db:sync" && git push origin master'; // @todo require developer to add their ssh key into dev server, building a web interface with authentication.
+        $cmd = 'ssh butler@' . $from_domain.' cd /var/www/'.$config['site_slug'].'/site && git pull origin master && wp db export --add-drop-table --extended-insert=FALSE ./sql/export.sql && git add . && git commit -m ":tophat: Butler db:sync" && git push origin master'; // @todo require developer to add their ssh key into dev server, building a web interface with authentication.
         
         $process = Process::fromShellCommandline($cmd);
         $process->run(function ($type, $buffer) {
@@ -88,8 +96,10 @@ class Sync extends SymfonyCommand
         $q_domain->setErrorMessage('Selection %s is invalid.');
         $target_domain = $helper->ask($input, $output, $q_domain);
 
-        $new_url =   $target_domain;
+        $new_url =  $target_domain;
         SubProcess::replaceURL($input, $output, $new_url);
 
+
+        $output->writeln('Local database has been updated.');
     }
 }
