@@ -62,7 +62,7 @@ class Sync extends SymfonyCommand
 
         if (!$process->isSuccessful()) {
             throw new ProcessFailedException($process);
-        
+        }
         // git pull
         Git::pull($input, $output);
         
