@@ -44,7 +44,7 @@ final class ButlerApplication extends Application
             new \Console\DB\Export(),
             new \Console\DB\Import(),
             new \Console\DB\ReplaceURL(),
-            new \Console\DB\Sync(),
+            new \Console\DB\Pull(),
             // new \Console\Template\Import(),
             // new \Console\Template\DeployScripts(),
             new \Console\Migrate\Flywheel(),

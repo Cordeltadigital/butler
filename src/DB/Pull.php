@@ -14,7 +14,7 @@ use Symfony\Component\Process\Exception\ProcessFailedException;
 use Symfony\Component\Process\Process;
 use Console\Util\Git;
 
-class Sync extends SymfonyCommand
+class Pull extends SymfonyCommand
 {
 
     private $env_list = ['local', 'dev']; // 'prod'
@@ -26,8 +26,8 @@ class Sync extends SymfonyCommand
 
     public function configure()
     {
-        $this->setName('db:sync')
-            ->setDescription('Sync local database with latest dev environment.');
+        $this->setName('db:pull')
+            ->setDescription('Pull latest dev database.');
             // ->addOption('from', null, InputArgument::OPTIONAL, 'Environment to export database: ' . implode( ' | ', $this->env_list), null)
             // ->addOption('to', null, InputArgument::OPTIONAL, 'Environment to import database: ' . implode( ' | ', $this->env_list), null);
     }
