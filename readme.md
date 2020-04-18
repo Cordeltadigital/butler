@@ -6,30 +6,13 @@
 
 You'll need these servants installed before butler can do its thing:
 
-- LAMP Stack
-- [git](https://git-scm.com/)
-- [composer](https://getcomposer.org/)
-- [wp-cli](https://wp-cli.org/)
-- (Optional for linux-based systems) [virtualhost script](https://github.com/RoverWire/virtualhost)
+- Docker
+- Lando
+
+Check out [.lando.yml](./src/stubs/setup/.lando.yml) as a starting point. 
+
 
 Make sure you can access `git`, `composer` and `wp` commands from anywhere.
-
-# Getting started
-
-**Clone this repo**
-
-```bash
-git clone https://{USERNAME}@bitbucket.org/cordeltadigital/butler.git
-```
-
-Replace {USERNAME} with your bitbucket username (click Clone button and copy the command).
-
-**Install dependencies**
-
-```bash
-cd butler
-composer install
-```
 
 **Make `butler` command availabe everywhere**
 
