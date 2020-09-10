@@ -14,18 +14,25 @@ Check out [.lando.yml](./src/stubs/setup/.lando.yml) as a starting point.
 
 Make sure you can access `git`, `composer` and `wp` commands from anywhere.
 
-**Make `butler` command availabe everywhere**
 
-Create an alias like this in your `.bashrc` or `.bash_profile`
+## Download and install
 
 ```bash
-alias butler="php /path/to/butler/butler.php "
+# Download binary
+curl -O https://raw.githubusercontent.com/Cordeltadigital/butler/master/bin/butler.phar
+
+# Move it into local/bin folder 
+mv butler.phar /usr/local/bin/butler
+
+# Make it executable
+chmod +x /usr/local/bin/butler
 ```
 
-After `source` or restarting terminal, you should be able to run this command anywhere in your file system.
+Check if butler is properly installed by executing `list` command
 
 ```bash
-butler list # show list of commands available
+# show list of commands available
+butler list 
 ```
 
 ## Initialise project from scratch
@@ -89,4 +96,3 @@ Also ask Sean to create the desired subdomain (e.g. example.cordelta.digial) and
 - Install themes from Cordelta Digital collection
 - Starter templates
   - Child-theme
-- Web interface?
