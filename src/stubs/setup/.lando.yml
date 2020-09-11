@@ -31,7 +31,7 @@ tooling:
   butler:
     service: appserver
     cmd:
-      - butler --working-dir=/app/site
+      - butler
   update-butler:
     service: appserver
     cmd:
