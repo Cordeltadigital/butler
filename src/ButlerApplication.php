@@ -10,6 +10,7 @@ final class ButlerApplication extends Application
 {
     public function __construct()
     {
+        ini_set('max_execution_time', 300);
         set_time_limit(0);
         
         parent::__construct('Cordelta Digital Dev Butler', 'v' . BUTLER_VER);
