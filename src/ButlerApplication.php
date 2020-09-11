@@ -10,6 +10,8 @@ final class ButlerApplication extends Application
 {
     public function __construct()
     {
+        set_time_limit(0);
+        
         parent::__construct('Cordelta Digital Dev Butler', 'v' . BUTLER_VER);
     }
 
