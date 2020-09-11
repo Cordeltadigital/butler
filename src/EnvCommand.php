@@ -106,8 +106,8 @@ class EnvCommand extends SymfonyCommand
 
         // db name
         $q = new Question('Please enter the database name: ', 'butler');
-        $conf['db_name'] = $helper->ask($input, $output, $q);
-
+        $conf['db_name'] = $this->setupEnvVar('db_name', $input, $output, $q);
+        
         $output->writeln('<info>Generating new .butler.env file ' . $configFile . '...</info>');
         Env::generateEnvFile($conf, $configFile);
         $output->writeln('<info>Done.</info>');
