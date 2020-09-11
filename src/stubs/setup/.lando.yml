@@ -25,6 +25,7 @@ services:
           butler list
           mkdir /var/www/.butler/
           mkdir /app/site
+          chmod 775 /app/site
         fi
         "
 tooling:
