@@ -24,7 +24,6 @@ services:
           chmod +x /usr/local/bin/butler
           butler list
           mkdir /var/www/.butler/
-          cp /app/.butler.env.sample /app/site/.butler.env
         fi
         "
 tooling:

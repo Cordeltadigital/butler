@@ -170,7 +170,7 @@ class Init extends SymfonyCommand
         $config = Env::loadConfig();
 
         $output->writeln('<info>Installing WordPress</info>');
-        $cmd = 'wp core install --url=' . $config['domain'] . ' --title=' . $config['domain'] . ' --admin_user=butler --admin_email=sean.wu@cordelta.com';
+        $cmd = 'wp core install --url=' . $config['domain'] . ' --title=' . $config['domain'] . ' --admin_user=butler --admin_password=butler --admin_email=noreply@cordelta.digital';
 
         $process = Process::fromShellCommandline($cmd);
         $process->run(function ($type, $buffer) {
