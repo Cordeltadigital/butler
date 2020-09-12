@@ -167,18 +167,12 @@ class Init extends SymfonyCommand
         ]), $output);
 
         // install wordpress
-        $config = Env::loadConfig();
+        $command = $this->getApplication()->find('install');
 
-        $output->writeln('<info>Installing WordPress</info>');
-        $cmd = 'wp core install --url=' . $config['domain'] . ' --title=' . $config['domain'] . ' --admin_user=butler --admin_password=butler --admin_email=noreply@cordelta.digital';
+        $command->run(new ArrayInput([
+            'command' => 'install',
+        ]), $output);
 
-        $process = Process::fromShellCommandline($cmd);
-        $process->run(function ($type, $buffer) {
-            echo $buffer;
-        });
-        if (!$process->isSuccessful()) {
-            throw new ProcessFailedException($process);
-        }
     }
 
     private function exportDB($input, $output)

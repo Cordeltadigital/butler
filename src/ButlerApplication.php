@@ -56,6 +56,7 @@ final class ButlerApplication extends Application
             new \Console\Takeover(),
             new \Console\Init(),
             new \Console\InfoCommand(),
+            new \Console\InstallCommand(),
             new \Console\Generate\SetupScriptsGenerator(),
             // @todo lando butler child-theme:start => install cordelta child theme, npm i, npm start
             // @todo lando butler theme => pick a theme to install
